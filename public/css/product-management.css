@@ -1,0 +1,540 @@
+/* Product Management Styles */
+
+.product-container {
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.product-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.product-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.product-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card h3 {
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.stat-card .value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #7c4dff;
+}
+
+.action-buttons {
+    display: flex !important;
+    gap: 0.5rem !important;
+    justify-content: center !important;
+    flex-wrap: wrap;
+    min-height: 40px;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+/* Enhanced action button styles */
+.action-buttons .btn-service {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 35px;
+    height: 35px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.action-buttons .btn-service:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.action-buttons .btn-service i {
+    font-size: 0.9rem;
+}
+
+.btn-action {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    height: 32px;
+    margin: 0 2px;
+    font-weight: 500;
+}
+
+/* Service button styles for action buttons in table */
+.btn-service {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-service.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-service.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-service.btn-warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-service.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-service.btn-info {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-service:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-service.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.btn-product {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-product.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-product.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-product.btn-warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-product.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-product.btn-info {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-product.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-product:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-product.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Service button styles for action buttons in table */
+.btn-service {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-service.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-service.btn-success {
+    background: #10b981;
+    color: white;
+}
+
+.btn-service.btn-warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-service.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-service.btn-info {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-service:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-service.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.product-table-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.product-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.product-image-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background: #e0c3fc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7c4dff;
+    font-weight: bold;
+}
+
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-badge.condition-new {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-badge.condition-used {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #7c4dff;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.current-image {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.current-image img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.current-images {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.current-images img {
+    width: 100%;
+    height: 150px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    object-fit: cover;
+}
+
+.image-preview {
+    position: relative;
+    display: inline-block;
+}
+
+.image-preview .remove-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.message.success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.message.error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.message.warning {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.price {
+    font-weight: bold;
+    color: #059669;
+}
+
+.current-user-info {
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.myadmin-badge {
+    background: #fbbf24;
+    color: #92400e;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+}
+
+.admin-badge {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 0.5rem;
+}
+
+/* Responsive design for action buttons */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.25rem !important;
+    }
+    
+    .action-buttons .btn-action {
+        min-width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .action-buttons .btn-action i {
+        font-size: 1rem;
+    }
+}
+
+/* Ensure buttons are always visible in DataTable */
+.dataTables_wrapper .dataTable td {
+    vertical-align: middle;
+}
+
+.dataTables_wrapper .dataTable .action-buttons {
+    white-space: nowrap;
+}
+
+/* Actions column styling */
+.actions-column {
+    min-width: 120px !important;
+    text-align: center !important;
+}
+
+/* Force actions column to be visible */
+.dataTables_wrapper .dataTable .actions-column {
+    display: table-cell !important;
+    visibility: visible !important;
+}
+
+/* Ensure action buttons are always visible */
+.dataTables_wrapper .dataTable .action-buttons {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Debug styling to make sure buttons are visible */
+.btn-action {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 2px;
+}
+
+/* Responsive handling for actions */
+@media (max-width: 768px) {
+    .actions-column {
+        min-width: 100px !important;
+    }
+    
+    .action-buttons {
+        flex-direction: row !important;
+        gap: 0.25rem !important;
+    }
+    
+    .btn-action {
+        min-width: 32px !important;
+        height: 32px !important;
+        font-size: 0.8rem !important;
+    }
+} 

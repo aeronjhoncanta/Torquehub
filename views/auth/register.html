@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TorqueHub | Register</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <!-- Illustration Panel -->
+    <div class="auth-illustration">
+      <div class="illustration-content">
+        <h1>Join TorqueHub Today!</h1>
+        <p>Streamline your motorcycle dealership operations with our comprehensive management system</p>
+        <img src="/images/illus.png" alt="Motorcycle Registration" class="illustration-img floating">
+      </div>
+    </div>
+
+    <!-- Form Panel -->
+    <div class="auth-form-panel">
+      <div class="auth-logo">
+        <img src="/images/logo.png" alt="TorqueHub Logo">
+      </div>
+      
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2>Create Account</h2>
+          <p>Get started in just a few minutes</p>
+        </div>
+
+        <form class="auth-form" id="registerForm" enctype="multipart/form-data">
+          <div class="form-group" style="text-align:center;">
+            <label for="profilePic" style="font-weight:600;">Profile Picture</label>
+            <div id="dropArea" class="profile-drop-area">
+              <img id="profilePreview" src="/images/logo.png" alt="Profile Preview" class="profile-preview-img">
+              <div class="profile-drop-text">
+                <i class="fas fa-camera"></i>
+                <span>Drag & drop or click to upload</span>
+              </div>
+              <input type="file" id="profilePic" name="profilePic" accept="image/*" style="display:none;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <div class="input-container">
+              <i class="fas fa-user"></i>
+              <input type="text" id="fullName" name="fullName" placeholder="Your full name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-container">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="dealership">Dealership Name</label>
+            <div class="input-container">
+              <i class="fas fa-store"></i>
+              <input type="text" id="dealership" name="dealership" placeholder="Your dealership name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-container">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="password" name="password" placeholder="Create a password" required>
+              <button type="button" class="toggle-password">
+              </button>
+            </div>
+            <div class="password-strength">
+              <div class="strength-meter">
+                <div class="strength-meter-fill"></div>
+              </div>
+              <div class="strength-text">
+                <span>Password Strength:</span>
+                <span id="strengthLabel">Weak</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="input-container">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+          </div>
+
+          <div class="terms-group">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a></label>
+          </div>
+
+          <button type="submit" class="btn-auth">
+            <i class="fas fa-user-plus"></i>
+            <span>Create Account</span>
+          </button>
+        </form>
+
+        <div class="auth-divider">
+          <span>or sign up with</span>
+        </div>
+
+        <div class="social-login">
+          <button type="button" class="social-button google">
+            <i class="fab fa-google"></i>
+            <span>Google</span>
+          </button>
+          <button type="button" class="social-button facebook">
+            <i class="fab fa-facebook-f"></i>
+            <span>Facebook</span>
+          </button>
+        </div>
+
+        <div class="auth-footer">
+          Already have an account? <a href="/login">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/register.js"></script>
+</body>
+</body>
+<style>
+.profile-drop-area {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 10px auto;
+  border: 2px dashed #a78bfa;
+  border-radius: 50%;
+  position: relative;
+  background: #f8f7fc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+.profile-drop-area.dragover {
+  border-color: #7c3aed;
+  background: #ede9fe;
+}
+.profile-preview-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.08);
+}
+.profile-drop-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
+  color: #a78bfa;
+  font-size: 0.95em;
+  pointer-events: none;
+}
+.profile-drop-text i {
+  display: block;
+  font-size: 1.3em;
+  margin-bottom: 2px;
+}
+</style>
+<script>
+// Profile picture drag & drop and preview logic
+const dropArea = document.getElementById('dropArea');
+const fileInput = document.getElementById('profilePic');
+const previewImg = document.getElementById('profilePreview');
+
+dropArea.addEventListener('click', () => fileInput.click());
+
+dropArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  dropArea.classList.add('dragover');
+});
+dropArea.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  dropArea.classList.remove('dragover');
+});
+dropArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropArea.classList.remove('dragover');
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    fileInput.files = e.dataTransfer.files;
+    showPreview(e.dataTransfer.files[0]);
+  }
+});
+fileInput.addEventListener('change', (e) => {
+  if (fileInput.files && fileInput.files[0]) {
+    showPreview(fileInput.files[0]);
+  }
+});
+function showPreview(file) {
+  if (!file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    previewImg.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+</html>

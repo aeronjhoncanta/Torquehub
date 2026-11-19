@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Upload - TorqueHub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/adashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .bulk-upload-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .upload-header h1 {
+            color: #7c4dff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group select,
+        .form-group input[type="file"] {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group select:focus,
+        .form-group input[type="file"]:focus {
+            border-color: #7c4dff;
+            outline: none;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, #7c4dff, #6a4c93);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .upload-btn:hover {
+            background: linear-gradient(135deg, #6a4c93, #5a4b8a);
+            transform: translateY(-2px);
+        }
+        
+        .upload-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .template-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .template-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .template-btn:hover {
+            background: #218838;
+        }
+        
+        .results-section {
+            margin-top: 2rem;
+        }
+        
+        .results-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #7c4dff;
+        }
+        
+        .success-count {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .error-count {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .details-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .detail-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        .detail-item.success {
+            color: #28a745;
+        }
+        
+        .detail-item.error {
+            color: #dc3545;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #7c4dff, #6a4c93);
+            transition: width 0.3s ease;
+        }
+        
+        .file-drop-zone {
+            border: 2px dashed #7c4dff;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-drop-zone:hover {
+            background: #e8f4fd;
+            border-color: #6a4c93;
+        }
+        
+        .file-drop-zone.dragover {
+            background: #e8f4fd;
+            border-color: #28a745;
+        }
+        
+        .file-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><i class="fas fa-tachometer-alt"></i> <a href="/adashboard" style="color:inherit;text-decoration:none;">Admin Dashboard</a></li>
+            <li><i class="fas fa-users"></i> <a href="/user-management" style="color:inherit;text-decoration:none;display:block;width:100%;">User Management</a></li>
+            <li><i class="fas fa-box"></i> <a href="/product-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Product Management</a></li>
+            <li><i class="fas fa-tools"></i> <a href="/services-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Services Management</a></li>
+            <li><i class="fas fa-shopping-cart"></i> <a href="/transaction-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Transaction Management</a></li>
+            <li><i class="fas fa-chart-bar"></i> <a href="/charts" style="color:inherit;text-decoration:none;display:block;width:100%;">2D Charts & Analytics</a></li>
+            <li><i class="fas fa-upload"></i> <a href="/bulk-upload" style="color:inherit;text-decoration:none;display:block;width:100%;">Bulk Upload</a></li>
+            <li><i class="fas fa-sign-out-alt"></i> <a href="#" id="logout-btn" style="color:inherit;text-decoration:none;display:block;width:100%;">Logout</a></li>
+            <li><i class="fas fa-home"></i> <a href="/dashboard" style="color:inherit;text-decoration:none;">Dashboard</a></li>
+        </ul>
+    </div>
+    
+    <div class="main">
+        <div class="bulk-upload-container">
+            <div class="upload-section">
+                <div class="upload-header">
+                    <h1><i class="fas fa-upload"></i> Bulk Excel Upload</h1>
+                    <p>Import multiple products, users, or transactions from Excel files</p>
+                </div>
+                
+                <form id="bulkUploadForm" class="upload-form">
+                    <div class="form-group">
+                        <label for="importType">Import Type:</label>
+                        <select id="importType" name="import_type" required>
+                            <option value="">Select import type...</option>
+                            <option value="products">Products</option>
+                            <option value="users">Users</option>
+                            <option value="transactions">Transactions</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="excelFile">Excel File:</label>
+                        <div class="file-drop-zone" id="fileDropZone">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #7c4dff; margin-bottom: 1rem;"></i>
+                            <p><strong>Drag & Drop Excel file here</strong></p>
+                            <p>or</p>
+                            <input type="file" id="excelFile" name="excel_file" accept=".xlsx,.xls,.csv" style="display: none;" required>
+                            <button type="button" onclick="document.getElementById('excelFile').click()" class="upload-btn" style="margin-top: 1rem;">
+                                <i class="fas fa-file-excel"></i> Choose File
+                            </button>
+                        </div>
+                        <div id="fileInfo" class="file-info" style="display: none;"></div>
+                    </div>
+                    
+                    <button type="submit" id="uploadBtn" class="upload-btn">
+                        <i class="fas fa-upload"></i> Start Bulk Import
+                    </button>
+                </form>
+                
+                <div class="template-section">
+                    <h3><i class="fas fa-download"></i> Download Templates</h3>
+                    <p>Download Excel templates to ensure your data is formatted correctly:</p>
+                    <button class="template-btn" onclick="downloadTemplate('products')">
+                        <i class="fas fa-box"></i> Products Template
+                    </button>
+                    <button class="template-btn" onclick="downloadTemplate('users')">
+                        <i class="fas fa-users"></i> Users Template
+                    </button>
+                    <button class="template-btn" onclick="downloadTemplate('transactions')">
+                        <i class="fas fa-shopping-cart"></i> Transactions Template
+                    </button>
+                </div>
+            </div>
+            
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <div class="upload-section">
+                    <h2><i class="fas fa-chart-bar"></i> Import Results</h2>
+                    <div id="resultsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        let currentUser = null;
+        
+        $(document).ready(function() {
+            checkAuth();
+            setupFileUpload();
+            setupLogout();
+        });
+        
+        function checkAuth() {
+            $.get('/api/profile')
+                .done(function(user) {
+                    currentUser = user;
+                    console.log('✅ User authenticated:', user.full_name);
+                })
+                .fail(function() {
+                    console.log('❌ Authentication failed');
+                    window.location.href = '/login';
+                });
+        }
+        
+        function setupFileUpload() {
+            const fileInput = document.getElementById('excelFile');
+            const fileDropZone = document.getElementById('fileDropZone');
+            const fileInfo = document.getElementById('fileInfo');
+            
+            // File input change
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    displayFileInfo(file);
+                }
+            });
+            
+            // Drag and drop
+            fileDropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                fileDropZone.classList.add('dragover');
+            });
+            
+            fileDropZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                fileDropZone.classList.remove('dragover');
+            });
+            
+            fileDropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                fileDropZone.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    displayFileInfo(files[0]);
+                }
+            });
+            
+            // Click to upload
+            fileDropZone.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+        
+        function displayFileInfo(file) {
+            const fileInfo = document.getElementById('fileInfo');
+            const size = (file.size / 1024 / 1024).toFixed(2);
+            
+            fileInfo.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-file-excel" style="color: #28a745; font-size: 1.5rem;"></i>
+                    <div>
+                        <strong>${file.name}</strong><br>
+                        <small>Size: ${size} MB | Type: ${file.type}</small>
+                    </div>
+                </div>
+            `;
+            fileInfo.style.display = 'block';
+        }
+        
+        function downloadTemplate(type) {
+            $.get(`/api/uploads/templates/${type}`)
+                .done(function(response) {
+                    // Create CSV content
+                    const headers = response.template.headers.join(',');
+                    const sampleData = response.template.sample_data.map(row => row.join(',')).join('\n');
+                    const csvContent = headers + '\n' + sampleData;
+                    
+                    // Create and download file
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${type}_template.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    
+                    showMessage(`✅ ${type} template downloaded successfully!`, 'success');
+                })
+                .fail(function() {
+                    showMessage('❌ Failed to download template', 'error');
+                });
+        }
+        
+        $('#bulkUploadForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const importType = $('#importType').val();
+            const file = $('#excelFile')[0].files[0];
+            
+            if (!importType) {
+                showMessage('❌ Please select an import type', 'error');
+                return;
+            }
+            
+            if (!file) {
+                showMessage('❌ Please select an Excel file', 'error');
+                return;
+            }
+            
+            formData.append('import_type', importType);
+            formData.append('excel_file', file);
+            
+            // Show loading state
+            const uploadBtn = $('#uploadBtn');
+            const originalText = uploadBtn.html();
+            uploadBtn.html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+            uploadBtn.prop('disabled', true);
+            
+            $.ajax({
+                url: '/api/uploads/bulk-excel',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhrFields: { withCredentials: true },
+                success: function(response) {
+                    showResults(response);
+                    showMessage('✅ Bulk import completed successfully!', 'success');
+                },
+                error: function(xhr) {
+                    const error = xhr.responseJSON?.error || 'Upload failed';
+                    showMessage(`❌ ${error}`, 'error');
+                },
+                complete: function() {
+                    uploadBtn.html(originalText);
+                    uploadBtn.prop('disabled', false);
+                }
+            });
+        });
+        
+        function showResults(response) {
+            const resultsSection = $('#resultsSection');
+            const resultsContent = $('#resultsContent');
+            
+            const results = response.results;
+            const successRate = ((results.success / results.total) * 100).toFixed(1);
+            
+            let html = `
+                <div class="results-card">
+                    <h3>Import Summary</h3>
+                    <p><strong>Total Records:</strong> ${results.total}</p>
+                    <p><strong class="success-count">Successful:</strong> ${results.success}</p>
+                    <p><strong class="error-count">Errors:</strong> ${results.errors}</p>
+                    <p><strong>Success Rate:</strong> ${successRate}%</p>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${successRate}%"></div>
+                    </div>
+                </div>
+            `;
+            
+            if (results.details.length > 0) {
+                html += `
+                    <div class="results-card">
+                        <h3>Detailed Results</h3>
+                        <div class="details-list">
+                `;
+                
+                results.details.forEach(detail => {
+                    const statusClass = detail.status === 'success' ? 'success' : 'error';
+                    html += `
+                        <div class="detail-item ${statusClass}">
+                            <strong>Row ${detail.row}:</strong> ${detail.message}
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultsContent.html(html);
+            resultsSection.show();
+        }
+        
+        function showMessage(message, type) {
+            const alertClass = type === 'error' ? 'error-message' : 'success-message';
+            const alert = $(`<div class="${alertClass}" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">${message}</div>`);
+            
+            $('body').append(alert);
+            
+            setTimeout(() => {
+                alert.fadeOut(() => alert.remove());
+            }, 5000);
+        }
+        
+        function setupLogout() {
+            $('#logout-btn').on('click', function(e) {
+                e.preventDefault();
+                
+                if (!confirm('Are you sure you want to logout?')) {
+                    return;
+                }
+                
+                $.post('/api/logout')
+                    .done(function() {
+                        alert('Logged out successfully');
+                        window.location.href = '/';
+                    })
+                    .fail(function() {
+                        alert('Logout failed. Please try again.');
+                    });
+            });
+        }
+    </script>
+</body>
+</html> 

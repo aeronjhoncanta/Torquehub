@@ -1,0 +1,396 @@
+:root {
+  --primary: #b399d4; /* Pastel purple */
+  --primary-light: #d8c2e6;
+  --primary-dark: #8a6dae;
+  --text: #2d1b3d; /* Darker text for better contrast */
+  --text-light: #5a4a6a; /* Lighter text variant */
+  --background: #f9f5ff;
+  --card-bg: #ffffff;
+  --accent: #e2b4ff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text);
+  background-color: var(--background);
+  line-height: 1.6;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Navigation */
+.navbar {
+  background-color: var(--primary-light);
+  padding: 20px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.logo span {
+  color: var(--primary-dark);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: var(--primary-dark);
+}
+
+.btn-outline {
+  padding: 8px 20px;
+  border: 2px solid var(--primary);
+  border-radius: 25px;
+  transition: all 0.3s;
+}
+
+.btn-outline:hover {
+  background-color: var(--primary);
+  color: white !important;
+}
+
+/* Hero Section */
+.hero {
+  padding: 60px 0;
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--background) 100%);
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  color: var(--text);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 30px;
+  opacity: 0.95;
+  font-weight: 500;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(142, 104, 186, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.hero-image img {
+  max-width: 100%;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(142, 104, 186, 0.2);
+}
+
+/* Features Section */
+.features {
+  padding: 80px 0;
+  background-color: var(--card-bg);
+}
+
+.features h2 {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 50px;
+  color: var(--text);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 5px 15px rgba(142, 104, 186, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(142, 104, 186, 0.15);
+}
+
+.feature-card::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.icon {
+  width: 70px;
+  height: 70px;
+  background-color: var(--primary-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--primary-dark);
+  font-size: 24px;
+}
+
+.feature-card h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.feature-card p {
+  color: var(--text);
+  line-height: 1.6;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+/* Motorcycle Showcase Section */
+.motorcycle-showcase {
+  padding: 60px 0;
+  background-color: var(--background);
+}
+
+.showcase-title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: var(--text);
+}
+
+.showcase-subtitle {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 40px;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.motorcycle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.motorcycle-card {
+  background-color: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(142, 104, 186, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.motorcycle-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(142, 104, 186, 0.15);
+}
+
+.motorcycle-image {
+  height: 200px;
+  overflow: hidden;
+}
+
+.motorcycle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.motorcycle-card:hover .motorcycle-image img {
+  transform: scale(1.05);
+}
+
+.motorcycle-details {
+  padding: 20px;
+}
+
+.motorcycle-details h3 {
+  margin: 0 0 5px 0;
+  color: var(--text);
+}
+
+.motorcycle-details .price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+}
+
+.motorcycle-specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.spec-item {
+  background-color: var(--primary-light);
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.view-btn {
+  display: block;
+  text-align: center;
+  padding: 8px 0;
+  background-color: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.view-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Footer */
+.footer {
+  background-color: var(--primary-light);
+  padding: 40px 0;
+  color: var(--text);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: var(--primary-dark);
+}
+
+/* Button Effects */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 30px;
+  height: 100px;
+  background: rgba(255,255,255,0.2);
+  transform: rotate(30deg);
+  transition: all 0.3s;
+}
+
+.btn-primary:hover::after {
+  right: 120%;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .hero .container {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+  
+  .hero-content {
+    flex: 1;
+  }
+  
+  .hero-image {
+    flex: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 32px;
+  }
+  
+  .features h2, .showcase-title {
+    font-size: 28px;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .footer-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/adashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><i class="fas fa-tachometer-alt"></i> <a href="/adashboard" style="color:inherit;text-decoration:none;">Admin Dashboard</a></li>
+            <li><i class="fas fa-users"></i> <a href="/user-management" style="color:inherit;text-decoration:none;display:block;width:100%;">User Management</a></li>
+            <li><i class="fas fa-box"></i> <a href="/product-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Product Management</a></li>
+            <li><i class="fas fa-tools"></i> <a href="/services-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Services Management</a></li>
+            <li><i class="fas fa-shopping-cart"></i> <a href="/transaction-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Transaction Management</a></li>
+            <li><i class="fas fa-chart-bar"></i> <a href="/charts" style="color:inherit;text-decoration:none;display:block;width:100%;">Charts & Analytics</a></li>
+            <li><i class="fas fa-history"></i> <a href="/login-history" style="color:inherit;text-decoration:none;display:block;width:100%;">Login History</a></li>
+            <li><i class="fas fa-sign-out-alt"></i> <a href="#" id="logout-btn" style="color:inherit;text-decoration:none;display:block;width:100%;">Logout</a></li>
+            <li><i class="fas fa-home"></i> <a href="/dashboard" style="color:inherit;text-decoration:none;">Dashboard</a></li>
+        </ul>
+    </div>
+    <div class="main">
+        <div class="header">
+            <h1>Welcome, <span id="adminName" class="admin-name-hover" onclick="toggleAdminDetails()">Admin <i class="fas fa-info-circle" style="font-size: 0.8em; margin-left: 5px; opacity: 0.7;"></i></span></h1>
+            <div class="admin-details-popup" id="adminDetailsPopup">
+                <div class="popup-header">
+                    <h4><i class="fas fa-user-circle"></i> Account Details</h4>
+                    <button class="close-popup" onclick="closeAdminDetailsPopup()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="admin-details-content" id="adminDetailsContent">
+                    <div class="loading-admin-details">
+                        <i class="fas fa-spinner fa-spin"></i> Loading account details...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Navigation -->
+        <div class="quick-nav">
+            <h3><i class="fas fa-rocket" style="color:#1976d2;margin-right:8px;"></i> Quick Access</h3>
+            <div class="nav-cards">
+                <a href="/user-management" class="nav-card">
+                    <i class="fas fa-users"></i>
+                    <span>User Management</span>
+                </a>
+                <a href="/product-management" class="nav-card">
+                    <i class="fas fa-box"></i>
+                    <span>Product Management</span>
+                </a>
+                <a href="/services-management" class="nav-card">
+                    <i class="fas fa-tools"></i>
+                    <span>Services Management</span>
+                </a>
+                <a href="/transaction-management" class="nav-card">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Transaction Management</span>
+                </a>
+                <a href="/charts" class="nav-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="/login-history" class="nav-card">
+                    <i class="fas fa-history"></i>
+                    <span>Login History</span>
+                </a>
+                <a href="/dashboard" class="nav-card">
+                    <i class="fas fa-home"></i>
+                    <span>Main Dashboard</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="cards">
+            <div class="card">
+                <h3><i class="fas fa-users" style="color:#1976d2;margin-right:8px;"></i> Total Users</h3>
+                <p id="totalUsers">Loading...</p>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-signal" style="color:#1976d2;margin-right:8px;"></i> Active Sessions</h3>
+                <p id="activeSessions">Loading...</p>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-chart-line" style="color:#1976d2;margin-right:8px;"></i> Revenue</h3>
+                <p id="revenue">Loading...</p>
+            </div>
+        </div>
+        
+        <!-- Dashboard Overview (like regular dashboard) -->
+        <div class="dashboard-overview">
+            <h2><i class="fas fa-chart-line" style="color:#1976d2;margin-right:8px;"></i> Dashboard Overview</h2>
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <h3>Products</h3>
+                    <p id="totalProducts">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Revenue</h3>
+                    <p id="totalRevenue">₱0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Customers</h3>
+                    <p id="totalCustomers">0</p>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Services Overview -->
+        <div class="services-overview">
+            <h2><i class="fas fa-tools" style="color:#1976d2;margin-right:8px;"></i> Services Overview</h2>
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <h3>Total Services</h3>
+                    <p id="totalServices">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Services</h3>
+                    <p id="activeServices">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Value</h3>
+                    <p id="totalServicesValue">₱0</p>
+                </div>
+            </div>
+        </div>
+        
+
+
+        <!-- Services Section -->
+        <div class="services-section">
+            <div class="column-content">
+                <h2><i class="fas fa-tools" style="color:#1976d2;margin-right:8px;"></i> Services</h2>
+                <div id="servicesGrid" class="motorcycles-grid">
+                    <!-- Services will be loaded here -->
+                </div>
+                <div id="loadingServices" style="text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading services...
+                </div>
+                <div id="noServices" style="text-align: center; padding: 20px; color: #666; display: none;">
+                    No services uploaded yet.
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- All Products Section -->
+        <div class="bulk-upload-section">
+            <div class="column-content">
+                <h2><i class="fas fa-box" style="color:#1976d2;margin-right:8px;"></i> All Products</h2>
+                <div id="allProductsGrid" class="motorcycles-grid">
+                    <!-- All products will be loaded here -->
+                </div>
+                <div id="loadingAllProducts" style="text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading all products...
+                </div>
+                <div id="noAllProducts" style="text-align: center; padding: 20px; color: #666; display: none;">
+                    No products found.
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <style>
+        /* Enhanced Body Background */
+        body {
+            background: linear-gradient(135deg, #e0b1cb 0%, #b8a9c9 50%, #a8a4c9 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Enhanced Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 4px 0 20px rgba(139, 92, 246, 0.3);
+            border-right: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .sidebar h2 {
+            background: linear-gradient(45deg, #ffffff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .sidebar ul li {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin: 5px 10px;
+        }
+        
+        .sidebar ul li:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            transform: translateX(5px);
+        }
+        
+        .sidebar ul li a {
+            color: #ecf0f1;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar ul li:hover a {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        /* Enhanced Main Content */
+        .main {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Enhanced Header */
+        .header {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+            padding: 2rem;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.3);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+        
+        .header h1 {
+            background: linear-gradient(45deg, #ffffff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Quick Navigation Styles */
+        .quick-nav {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .quick-nav h3 {
+            margin-bottom: 1rem;
+            color: #374151;
+            font-size: 1.2rem;
+        }
+        
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .nav-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-card span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* Enhanced Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card h3 {
+            background: linear-gradient(45deg, #a855f7, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .card p {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #a855f7;
+            margin: 0;
+        }
+        
+        /* Enhanced Overview Sections */
+        .dashboard-overview,
+        .services-overview {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .motorcycles-overview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #a855f7, #8b5cf6);
+        }
+        
+        .motorcycles-overview h2 {
+            background: linear-gradient(45deg, #a855f7, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        /* Enhanced Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #a855f7, #8b5cf6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card h3 {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #a855f7;
+            margin: 0;
+        }
+        
+        /* Enhanced Sections */
+        .services-section,
+        .bulk-upload-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .motorcycles-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #a855f7, #8b5cf6);
+        }
+        
+        .motorcycles-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+        
+        .column-content {
+            padding: 2rem;
+        }
+        
+        .column-content h2 {
+            background: linear-gradient(45deg, #a855f7, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        /* Enhanced Motorcycles Grid */
+        .motorcycles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .motorcycle-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .motorcycle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #a855f7, #8b5cf6);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .motorcycle-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .motorcycle-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .motorcycle-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .motorcycle-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .motorcycle-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .motorcycle-description {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .motorcycle-price {
+            font-weight: 700;
+            color: #a855f7;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-duration,
+        .service-status {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        .service-status {
+            font-weight: 600;
+        }
+
+
+        
+        .motorcycle-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-edit, .btn-delete {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+        
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+        }
+        
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220,53,69,0.3);
+        }
+        
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220,53,69,0.4);
+        }
+        
+        /* Enhanced Loading States */
+        #loadingMotorcycles {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            border: 2px dashed rgba(168, 85, 247, 0.3);
+            color: #a855f7;
+            font-weight: 600;
+        }
+        
+        #noMotorcycles {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            border: 2px dashed rgba(168, 85, 247, 0.3);
+            color: #a855f7;
+            font-weight: 600;
+        }
+        
+                 
+
+         /* Admin Details Popup */
+         .admin-name-hover {
+             cursor: pointer;
+             position: relative;
+             display: inline-block;
+             padding: 8px 15px;
+             border-radius: 8px;
+             transition: all 0.3s ease;
+             border: 2px solid transparent;
+         }
+
+         .admin-name-hover:hover {
+             text-decoration: underline;
+             text-shadow: 0 0 10px rgba(255,255,255,0.5);
+             background: rgba(255,255,255,0.2);
+             transform: scale(1.05);
+             border: 2px solid rgba(255,255,255,0.3);
+         }
+
+         .header {
+             position: relative;
+         }
+
+         .admin-details-popup {
+             position: absolute;
+             top: 100%;
+             right: 0;
+             background: #ffffff;
+             border: 3px solid #a855f7;
+             border-radius: 10px;
+             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+             width: 350px;
+             z-index: 9999;
+             display: none;
+             transform-origin: top right;
+             opacity: 0;
+             transform: translateY(-10px) scale(0.95);
+             transition: all 0.3s ease;
+             margin-top: 10px;
+             min-height: 200px;
+         }
+
+         .admin-details-popup.show {
+             display: block !important;
+             opacity: 1;
+             transform: translateY(0) scale(1);
+         }
+
+         .admin-details-content {
+             padding: 15px;
+         }
+
+         .loading-admin-details {
+             text-align: center;
+             padding: 20px;
+             color: #666;
+         }
+
+         .admin-detail-item {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 8px 0;
+             border-bottom: 1px solid #f0f0f0;
+         }
+
+         .admin-detail-item:last-child {
+             border-bottom: none;
+         }
+
+         .admin-detail-label {
+             font-weight: 600;
+             color: #333;
+             font-size: 0.9rem;
+         }
+
+         .admin-detail-value {
+             color: #666;
+             font-size: 0.9rem;
+             text-align: right;
+         }
+
+         .admin-profile-picture {
+             width: 60px;
+             height: 60px;
+             border-radius: 50%;
+             object-fit: cover;
+             margin: 0 auto 15px;
+             display: block;
+             border: 3px solid #a855f7;
+         }
+
+         .admin-role-badge {
+             background: linear-gradient(135deg, #a855f7, #8b5cf6);
+             color: white;
+             padding: 4px 12px;
+             border-radius: 20px;
+             font-size: 0.8rem;
+             font-weight: 600;
+             text-transform: uppercase;
+             letter-spacing: 0.5px;
+         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .motorcycles-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .column-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+    
+    <script>
+        // Check authentication and admin status
+        async function checkAuth() {
+            try {
+                console.log('Checking authentication...');
+                const response = await fetch('/api/profile', {
+                    credentials: 'include'
+                });
+                
+                console.log('Auth response status:', response.status);
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.log('Authentication failed, redirecting to login');
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error('Failed to fetch profile');
+                }
+                
+                const user = await response.json();
+                console.log('User authenticated:', user);
+                
+                // Check if user is admin
+                if (user.role !== 'admin' && user.role_id !== 2) {
+                    console.log('User is not admin, redirecting to dashboard');
+                    alert('Access denied. Admin privileges required.');
+                    window.location.href = '/dashboard';
+                    return;
+                }
+                
+                console.log('User is admin, proceeding...');
+                
+                // Update admin name
+                document.getElementById('adminName').textContent = user.full_name || 'Admin';
+                
+                return user;
+            } catch (error) {
+                console.error('Authentication error:', error);
+                window.location.href = '/login';
+            }
+        }
+        
+        // Load dashboard statistics
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/dashboard/stats', {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch dashboard stats');
+                }
+                
+                const stats = await response.json();
+                
+                // Update main dashboard statistics (like regular dashboard)
+                document.getElementById('totalProducts').textContent = stats.products || 0;
+                document.getElementById('totalRevenue').textContent = `₱${stats.revenue || '0.00'}`;
+                document.getElementById('totalCustomers').textContent = stats.customers || 0;
+                
+                // Update admin dashboard statistics
+                document.getElementById('totalUsers').textContent = stats.customers || 0;
+                document.getElementById('activeSessions').textContent = Math.floor(Math.random() * 50) + 20; // Simulated active sessions
+                document.getElementById('revenue').textContent = `₱${stats.revenue || '0.00'}`; // Revenue from stats
+                
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+                document.getElementById('totalUsers').textContent = 'Error';
+                document.getElementById('activeSessions').textContent = 'Error';
+                document.getElementById('revenue').textContent = 'Error';
+                document.getElementById('totalProducts').textContent = 'Error';
+                document.getElementById('totalRevenue').textContent = 'Error';
+                document.getElementById('totalCustomers').textContent = 'Error';
+            }
+        }
+        
+
+        
+        // Load admin details
+        async function loadAdminDetails() {
+            console.log('Loading admin details...');
+            try {
+                const adminDetailsContent = document.getElementById('adminDetailsContent');
+                console.log('Admin details content element:', adminDetailsContent);
+                
+                // Fetch current user profile
+                const response = await fetch('/api/profile', {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch admin details');
+                }
+                
+                const user = await response.json();
+                
+                const profilePicture = user.profile_picture || '/images/logo.png';
+                const currentTime = new Date().toLocaleString();
+                
+                adminDetailsContent.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 15px;">
+                        <img src="${profilePicture}" alt="Profile Picture" class="admin-profile-picture" onerror="this.src='/images/logo.png'">
+                        <div class="admin-role-badge">${user.role || 'Admin'}</div>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Full Name:</span>
+                        <span class="admin-detail-value">${user.full_name || 'N/A'}</span>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Email:</span>
+                        <span class="admin-detail-value">${user.email || 'N/A'}</span>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Dealership:</span>
+                        <span class="admin-detail-value">${user.dealership_name || 'N/A'}</span>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Bio:</span>
+                        <span class="admin-detail-value">${user.bio || 'No bio available'}</span>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Last Login:</span>
+                        <span class="admin-detail-value">${currentTime}</span>
+                    </div>
+                    <div class="admin-detail-item">
+                        <span class="admin-detail-label">Session ID:</span>
+                        <span class="admin-detail-value">${Math.random().toString(36).substr(2, 9)}</span>
+                    </div>
+                `;
+                
+                console.log('Admin details loaded successfully');
+            } catch (error) {
+                console.error('Error loading admin details:', error);
+                document.getElementById('adminDetailsContent').innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <h4>Account Details</h4>
+                        <p>Error loading account details. Please try again.</p>
+                        <div class="admin-detail-item">
+                            <span class="admin-detail-label">Status:</span>
+                            <span class="admin-detail-value">Error</span>
+                        </div>
+                        <div class="admin-detail-item">
+                            <span class="admin-detail-label">Time:</span>
+                            <span class="admin-detail-value">${new Date().toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Toggle admin details popup
+        function toggleAdminDetails() {
+            console.log('Toggling admin details popup');
+            const popup = document.getElementById('adminDetailsPopup');
+            if (popup) {
+                if (popup.classList.contains('show')) {
+                    popup.classList.remove('show');
+                } else {
+                    popup.classList.add('show');
+                    loadAdminDetails();
+                }
+            } else {
+                console.error('Admin details popup not found');
+            }
+        }
+        
+        // Close admin details popup manually
+        function closeAdminDetailsPopup() {
+            const popup = document.getElementById('adminDetailsPopup');
+            if (popup) {
+                popup.classList.remove('show');
+            }
+        }
+        
+
+
+        // Load services data
+        async function loadServices() {
+            try {
+                console.log('Loading services...');
+                document.getElementById('loadingServices').style.display = 'block';
+                document.getElementById('noServices').style.display = 'none';
+                
+                const response = await fetch('/api/services');
+                console.log('Services response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch services');
+                }
+                
+                const services = await response.json();
+                console.log('Services data:', services);
+                
+                // Update services statistics
+                updateServicesStats(services);
+                
+                // Display services
+                const servicesGrid = document.getElementById('servicesGrid');
+                servicesGrid.innerHTML = '';
+                
+                if (services.length === 0) {
+                    document.getElementById('noServices').style.display = 'block';
+                } else {
+                    // Show only the 6 most recent services
+                    const recentServices = services.slice(0, 6);
+                    recentServices.forEach(service => {
+                        const serviceCard = createServiceCard(service);
+                        servicesGrid.appendChild(serviceCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading services:', error);
+                document.getElementById('noServices').textContent = 'Error loading services';
+                document.getElementById('noServices').style.display = 'block';
+            } finally {
+                document.getElementById('loadingServices').style.display = 'none';
+            }
+        }
+
+        // Load all products data
+        async function loadAllProducts() {
+            try {
+                console.log('Loading all products...');
+                document.getElementById('loadingAllProducts').style.display = 'block';
+                document.getElementById('noAllProducts').style.display = 'none';
+                
+                const response = await fetch('/api/products?limit=100');
+                console.log('All products response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch all products');
+                }
+                
+                const data = await response.json();
+                console.log('All products data:', data);
+                
+                // Handle both array and object response formats
+                const allProducts = data.products || data;
+                console.log('All products array:', allProducts);
+                
+                // Display all products
+                const allProductsGrid = document.getElementById('allProductsGrid');
+                allProductsGrid.innerHTML = '';
+                
+                if (allProducts.length === 0) {
+                    document.getElementById('noAllProducts').style.display = 'block';
+                } else {
+                    // Show all products
+                    allProducts.forEach(product => {
+                        const productCard = createMotorcycleCard(product);
+                        allProductsGrid.appendChild(productCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading all products:', error);
+                document.getElementById('noAllProducts').textContent = 'Error loading all products';
+                document.getElementById('noAllProducts').style.display = 'block';
+            } finally {
+                document.getElementById('loadingAllProducts').style.display = 'none';
+            }
+        }
+
+
+        
+
+
+        // Update services statistics
+        function updateServicesStats(services) {
+            const totalServices = services.length;
+            const activeServices = services.filter(service => service.status === 'Active').length;
+            const totalValue = services.reduce((sum, service) => sum + parseFloat(service.price || 0), 0);
+            
+            document.getElementById('totalServices').textContent = totalServices;
+            document.getElementById('activeServices').textContent = activeServices;
+            document.getElementById('totalServicesValue').textContent = `₱${totalValue.toFixed(2)}`;
+        }
+        
+        // Create motorcycle card HTML
+        function createMotorcycleCard(motorcycle) {
+            const card = document.createElement('div');
+            card.className = 'motorcycle-card';
+            
+            const imageSrc = motorcycle.image || '/images/logo.png';
+            const price = parseFloat(motorcycle.price || 0).toFixed(2);
+            
+            card.innerHTML = `
+                <img src="${imageSrc}" alt="${motorcycle.name}" class="motorcycle-image" onerror="this.src='/images/logo.png'">
+                <div class="motorcycle-info">
+                    <div>
+                        <div class="motorcycle-name">${motorcycle.name}</div>
+                        <div class="motorcycle-description">${motorcycle.description || 'No description available'}</div>
+                        <div class="motorcycle-price">₱${price}</div>
+                    </div>
+                    <div class="motorcycle-actions">
+                        <button class="btn-edit" onclick="editMotorcycle(${motorcycle.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-delete" onclick="deleteMotorcycle(${motorcycle.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Create service card HTML
+        function createServiceCard(service) {
+            const card = document.createElement('div');
+            card.className = 'motorcycle-card';
+            
+            const imageSrc = service.images && service.images.length > 0 ? service.images[0].image_url : '/images/logo.png';
+            const price = parseFloat(service.price || 0).toFixed(2);
+            const duration = service.duration ? `${service.duration} hours` : 'N/A';
+            
+            card.innerHTML = `
+                <img src="${imageSrc}" alt="${service.name}" class="motorcycle-image" onerror="this.src='/images/logo.png'">
+                <div class="motorcycle-info">
+                    <div>
+                        <div class="motorcycle-name">${service.name}</div>
+                        <div class="motorcycle-description">${service.description || 'No description available'}</div>
+                        <div class="motorcycle-price">₱${price}</div>
+                        <div class="service-duration">Duration: ${duration}</div>
+                        <div class="service-status">Status: ${service.status || 'Active'}</div>
+                    </div>
+                    <div class="motorcycle-actions">
+                        <button class="btn-edit" onclick="editService(${service.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-delete" onclick="deleteService(${service.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Edit motorcycle function
+        function editMotorcycle(motorcycleId) {
+            // Redirect to product management page with edit mode
+            window.location.href = `/product-management?edit=${motorcycleId}`;
+        }
+        
+        // Delete motorcycle function
+        async function deleteMotorcycle(motorcycleId) {
+            if (!confirm('Are you sure you want to delete this motorcycle? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/products/${motorcycleId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    // Add to removed products in localStorage
+                    const removedProducts = JSON.parse(localStorage.getItem('removedProducts') || '[]');
+                    removedProducts.push({ id: motorcycleId });
+                    localStorage.setItem('removedProducts', JSON.stringify(removedProducts));
+                    
+                    loadMotorcycles();
+                    showNotification('Motorcycle deleted successfully!', 'success');
+                } else {
+                    const result = await response.json();
+                    throw new Error(result.error || 'Failed to delete motorcycle');
+                }
+            } catch (error) {
+                console.error('Error deleting motorcycle:', error);
+                showNotification('Error deleting motorcycle: ' + error.message, 'error');
+            }
+        }
+
+        // Edit service function
+        function editService(serviceId) {
+            // Redirect to services management page with edit mode
+            window.location.href = `/services-management?edit=${serviceId}`;
+        }
+
+        // Delete service function
+        async function deleteService(serviceId) {
+            if (!confirm('Are you sure you want to delete this service? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/services/${serviceId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    loadServices();
+                    showNotification('Service deleted successfully!', 'success');
+                } else {
+                    const result = await response.json();
+                    throw new Error(result.error || 'Failed to delete service');
+                }
+            } catch (error) {
+                console.error('Error deleting service:', error);
+                showNotification('Error deleting service: ' + error.message, 'error');
+            }
+        }
+        
+        // Show notification function
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                ${type === 'success' ? 'background: linear-gradient(135deg, #10b981, #059669);' : 
+                  type === 'error' ? 'background: linear-gradient(135deg, #ef4444, #dc2626);' : 
+                  'background: linear-gradient(135deg, #3b82f6, #2563eb);'}
+            `;
+            notification.textContent = message;
+            
+            // Add animation styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Logout functionality
+        async function logout() {
+            if (!confirm('Are you sure you want to logout?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    showNotification('Logged out successfully', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    throw new Error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showNotification('Logout failed. Please try again.', 'error');
+            }
+        }
+
+
+        
+                // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('DOM loaded, initializing dashboard...');
+            
+            // Debug: Check if elements exist
+            const adminName = document.getElementById('adminName');
+            const adminPopup = document.getElementById('adminDetailsPopup');
+            console.log('Admin name element:', adminName);
+            console.log('Admin popup element:', adminPopup);
+            
+            try {
+                // Check authentication first
+                const user = await checkAuth();
+                if (!user) return;
+                
+                // Load dashboard data
+                await Promise.all([
+                    loadDashboardStats(),
+                    loadServices(),
+                    loadAllProducts()
+                ]);
+                
+                // Setup logout functionality
+                const logoutBtn = document.getElementById('logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', logout);
+                }
+                
+
+                
+                // Setup admin name click functionality
+                const adminName = document.getElementById('adminName');
+                console.log('Admin name element:', adminName);
+                if (adminName) {
+                    console.log('Admin name click functionality setup complete');
+                }
+                
+                // Auto-refresh dashboard stats every 30 seconds
+                setInterval(loadDashboardStats, 30000);
+                
+
+                
+            } catch (error) {
+                console.error('Dashboard initialization error:', error);
+                showNotification('Failed to initialize dashboard', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

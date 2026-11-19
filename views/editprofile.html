@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - TORQUEHUB</title>
+    <link rel="stylesheet" href="/css/editprofile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <a href="/dashboard" class="back-link">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+    </a>
+
+    <div class="edit-profile-container">
+        <div class="header">
+            <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
+            <p>Update your account information and profile picture</p>
+        </div>
+
+        <form id="editProfileForm">
+            <div class="profile-pic-section">
+                <div class="profile-pic-wrapper">
+                    <img id="profilePic" src="/images/logo.png" alt="Profile Picture" class="profile-pic">
+                    <label for="profilePicInput" class="profile-pic-upload" title="Change pictures">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="profilePicInput" class="profile-pic-input" accept="image/*" multiple>
+                </div>
+                <div id="imagePreviewContainer" style="margin-top:15px;display:none;">
+                    <h4 style="color:#333;margin-bottom:10px;">Selected Images:</h4>
+                    <div id="imagePreviewGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email address" required readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="dealershipName">Dealership Name (Optional)</label>
+                <input type="text" id="dealershipName" name="dealershipName" placeholder="Enter your dealership name">
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Bio (Optional)</label>
+                <textarea id="bio" name="bio" placeholder="Tell us about yourself..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="newPassword">New Password (Leave blank to keep current)</label>
+                <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/dashboard'">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('editProfileForm');
+            const profilePic = document.getElementById('profilePic');
+            const profilePicInput = document.getElementById('profilePicInput');
+            const fullNameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('email');
+            const dealershipNameInput = document.getElementById('dealershipName');
+            const bioInput = document.getElementById('bio');
+            const newPasswordInput = document.getElementById('newPassword');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+
+            // Load current user profile
+            async function loadUserProfile() {
+                try {
+                    const response = await fetch('/api/profile', {
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            window.location.href = '/login';
+                            return;
+                        }
+                        throw new Error('Failed to load profile');
+                    }
+
+                    const user = await response.json();
+                    
+                    // Populate form fields
+                    fullNameInput.value = user.full_name || '';
+                    emailInput.value = user.email || '';
+                    dealershipNameInput.value = user.dealership_name || '';
+                    bioInput.value = user.bio || '';
+                    
+                    // Set profile picture
+                    if (user.profile_picture) {
+                        const picturePath = user.profile_picture.startsWith('/uploads/') 
+                            ? user.profile_picture 
+                            : `/uploads/${user.profile_picture}`;
+                        profilePic.src = picturePath;
+                    }
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                    showToast('Failed to load profile. Please try again.', 'error');
+                }
+            }
+
+            // Profile pictures upload (multiple)
+            profilePicInput.addEventListener('change', async function(e) {
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+
+                // Validate files
+                for (const file of files) {
+                    if (!file.type.match('image.*')) {
+                        showToast('Please select only image files', 'error');
+                        return;
+                    }
+
+                    if (file.size > 2 * 1024 * 1024) {
+                        showToast('Each image must be less than 2MB', 'error');
+                        return;
+                    }
+                }
+
+                if (files.length > 5) {
+                    showToast('You can upload up to 5 images', 'error');
+                    return;
+                }
+
+                // Show preview
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                const previewGrid = document.getElementById('imagePreviewGrid');
+                previewGrid.innerHTML = '';
+                
+                files.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '8px';
+                        img.style.border = '2px solid #667eea';
+                        img.title = `Image ${index + 1}`;
+                        previewGrid.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+                previewContainer.style.display = 'block';
+
+                try {
+                    profilePic.classList.add('loading');
+                    const formData = new FormData();
+                    
+                    files.forEach(file => {
+                        formData.append('profile_pictures', file);
+                    });
+
+                    const response = await fetch('/api/profile/upload', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText || `HTTP ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    profilePic.src = result.profile_picture;
+                    showToast(`Successfully uploaded ${files.length} profile picture(s)!`, 'success');
+                } catch (error) {
+                    console.error('Upload failed:', error);
+                    showToast('Failed to update profile pictures. Please try again.', 'error');
+                } finally {
+                    profilePic.classList.remove('loading');
+                    profilePicInput.value = '';
+                }
+            });
+
+            // Form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Validate password confirmation
+                if (newPasswordInput.value && newPasswordInput.value !== confirmPasswordInput.value) {
+                    showToast('Passwords do not match', 'error');
+                    return;
+                }
+
+                try {
+                    form.classList.add('loading');
+                    
+                    const updateData = {
+                        full_name: fullNameInput.value.trim(),
+                        dealership_name: dealershipNameInput.value.trim(),
+                        bio: bioInput.value.trim()
+                    };
+
+                    if (newPasswordInput.value) {
+                        updateData.password = newPasswordInput.value;
+                    }
+
+                    const response = await fetch('/api/profile/update', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updateData),
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(errorText || `HTTP ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    showToast('Profile updated successfully!', 'success');
+                    
+                    // Clear password fields
+                    newPasswordInput.value = '';
+                    confirmPasswordInput.value = '';
+                    
+                    // Update profile picture if it was changed
+                    if (result.profile_picture) {
+                        profilePic.src = result.profile_picture;
+                    }
+                } catch (error) {
+                    console.error('Update failed:', error);
+                    showToast('Failed to update profile. Please try again.', 'error');
+                } finally {
+                    form.classList.remove('loading');
+                }
+            });
+
+            // Toast notification function
+            function showToast(message, type = 'success') {
+                // Remove existing toasts
+                const existingToasts = document.querySelectorAll('.toast');
+                existingToasts.forEach(toast => toast.remove());
+
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                // Show toast
+                setTimeout(() => toast.classList.add('show'), 100);
+
+                // Auto-remove after 3 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            // Load user profile on page load
+            loadUserProfile();
+        });
+    </script>
+</body>
+</html>

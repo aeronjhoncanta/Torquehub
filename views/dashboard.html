@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TORQUEHUB DASHBOARD</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/dashboard-enhanced.css">
+    <link rel="stylesheet" href="/css/custom-pagination.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="shoppee-header">
+        <img src="/images/logo.png" alt="TORQUEHUB Logo" class="shoppee-logo">
+        <h1>TORQUEHUB DASHBOARD</h1>
+    </header>
+    
+    <!-- Navigation Bar -->
+    <nav class="main-nav-strip">
+        <div class="nav-strip-container">
+            <ul class="nav-strip-list">
+                <li class="nav-strip-item">
+                    <a href="#motorcycle"><i class="fas fa-motorcycle"></i> Motorcycle</a>
+                </li>
+                <li class="nav-strip-item">
+                    <a href="#parts"><i class="fas fa-cogs"></i> Parts</a>
+                </li>
+                <li class="nav-strip-item">
+                    <a href="#services"><i class="fas fa-tools"></i> Services</a>
+                    <ul class="nav-strip-dropdown">
+                        <li><a href="#services" data-service="repairs">Repairs</a></li>
+                        <li><a href="#services" data-service="wash">Wash & Detailing</a></li>
+                        <li><a href="#services" data-service="modification">Modifications</a></li>
+                    </ul>
+                </li>
+                <li class="nav-strip-item nav-icon nav-cart">
+                    <a href="/cart" aria-label="Cart">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        <span class="cart-count">0</span>
+                    </a>
+                </li>
+
+                <li class="nav-strip-item nav-icon nav-notification">
+                    <a href="#notifications" aria-label="Notifications" class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notif-badge">3</span>
+                    </a>
+                    <ul class="nav-strip-dropdown notif-dropdown-panel">
+                        <li class="notif-header">Notifications</li>
+                        <div class="notif-items-container">
+                            <!-- Notifications will be loaded here dynamically -->
+                        </div>
+                        <li class="notif-footer"><a href="#all-notifications">See all</a></li>
+                    </ul>
+                </li>
+                <li class="nav-strip-item nav-profile">
+                    <div class="profile-container" id="profile-container">
+                        <img id="profile-avatar" src="/images/logo.png" alt="User Profile" class="profile-avatar loading">
+                        <div class="profile-info">
+                            <span id="profile-name" class="profile-name">Loading...</span>
+                            <span id="profile-role" class="profile-role">...</span>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-strip-item nav-icon nav-account">
+                    <a href="#account" aria-label="Account"><i class="fas fa-user-circle"></i></a>
+                    <ul class="nav-strip-dropdown">
+                        <li><a href="/editprofile">Edit Profile</a></li>
+                        <li><a href="/purchase-history">Purchase History</a></li>
+                        <li id="admin-dashboard-link" style="display: none;"><a href="/adashboard">Admin Dashboard</a></li>
+                        <li><a href="#" id="logout-btn">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Cards -->
+    <div class="dashboard shoppee-dashboard">
+        <div class="card shoppee-card">
+            <div class="card-icon"><i class="fas fa-box"></i></div>
+            <div class="card-title">Products</div>
+            <div class="card-value" id="products-count">Loading...</div>
+        </div>
+        <div class="card shoppee-card">
+            <div class="card-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="card-title">Revenue</div>
+            <div class="card-value" id="revenue-total">Loading...</div>
+        </div>
+        <div class="card shoppee-card">
+            <div class="card-icon"><i class="fas fa-user-friends"></i></div>
+            <div class="card-title">Customers</div>
+            <div class="card-value" id="customers-count">Loading...</div>
+        </div>
+    </div>
+
+
+
+    <!-- Motorcycle Products Section -->
+    <section id="motorcycle" class="motorcycle-products">
+        <h2>Motorcycles</h2>
+        <div class="product-controls">
+            <input type="text" class="product-search" placeholder="Search motorcycles...">
+            <select class="product-sort">
+                <option value="default">Sort by</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A-Z</option>
+                <option value="name-desc">Name: Z-A</option>
+            </select>
+            <select class="product-category" id="motorcycle-category-filter">
+                <option value="all">All Categories</option>
+                <!-- Categories will be loaded dynamically -->
+            </select>
+        </div>
+        <div class="products-list" id="motorcycle-products-list">
+            <!-- Products will be loaded dynamically -->
+            <div class="loading-placeholder">
+                <div class="spinner"></div>
+                <p>Loading products...</p>
+            </div>
+        </div>
+        <div id="motorcycle-pagination" class="pagination-container"></div>
+    </section>
+
+    <!-- Parts Section -->
+    <section id="parts" class="motorcycle-products">
+        <h2>Motorcycle Parts</h2>
+        <div class="product-controls">
+            <input type="text" class="product-search" placeholder="Search parts...">
+            <select class="product-sort">
+                <option value="default">Sort by</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A-Z</option>
+                <option value="name-desc">Name: Z-A</option>
+            </select>
+            <select class="product-category" id="parts-category-filter">
+                <option value="all">All Categories</option>
+                <!-- Parts categories will be loaded dynamically -->
+            </select>
+        </div>
+        <div class="products-list infinite-scroll-container" id="parts-products-list">
+            <!-- Parts products will be loaded dynamically -->
+            <div class="loading-placeholder">
+                <div class="spinner"></div>
+                <p>Loading parts...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="motorcycle-products">
+        <h2>Services</h2>
+        <div class="product-controls">
+            <input type="text" class="product-search" placeholder="Search services...">
+            <select class="product-sort">
+                <option value="default">Sort by</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A-Z</option>
+                <option value="name-desc">Name: Z-A</option>
+            </select>
+            <select class="product-category" id="services-category-filter">
+                <option value="all">All Categories</option>
+                <option value="Maintenance">Maintenance</option>
+                <option value="Repair">Repair</option>
+                <option value="Customization">Customization</option>
+                <option value="Inspection">Inspection</option>
+                <option value="Emergency">Emergency</option>
+            </select>
+        </div>
+        <div class="products-list" id="services-list">
+            <!-- Services will be loaded dynamically -->
+            <div class="loading-placeholder">
+                <div class="spinner"></div>
+                <p>Loading services...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hidden file input for profile upload -->
+    <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const profileAvatar = document.getElementById('profile-avatar');
+        const profileName = document.getElementById('profile-name');
+        const profileRole = document.getElementById('profile-role');
+        const profileContainer = document.getElementById('profile-container');
+        const profileUpload = document.getElementById('profile-upload');
+        const logoutBtn = document.getElementById('logout-btn');
+        
+        // Enhanced Navigation dropdown functionality
+        function setupDropdowns() {
+            let dropdownTimeout;
+            
+            document.querySelectorAll('.nav-strip-item').forEach(item => {
+                const dropdown = item.querySelector('.nav-strip-dropdown');
+                if (!dropdown) return;
+                
+                // Show dropdown on hover
+                item.addEventListener('mouseenter', () => {
+                    clearTimeout(dropdownTimeout);
+                    dropdown.style.display = 'block';
+                    dropdown.style.opacity = '1';
+                    dropdown.style.transform = 'translateY(0)';
+                });
+                
+                // Hide dropdown with delay on mouse leave
+                item.addEventListener('mouseleave', () => {
+                    dropdownTimeout = setTimeout(() => {
+                        dropdown.style.opacity = '0';
+                        dropdown.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            dropdown.style.display = 'none';
+                        }, 200);
+                    }, 300); // 300ms delay before hiding
+                });
+                
+                // Keep dropdown open when hovering over it
+                dropdown.addEventListener('mouseenter', () => {
+                    clearTimeout(dropdownTimeout);
+                });
+                
+                dropdown.addEventListener('mouseleave', () => {
+                    dropdownTimeout = setTimeout(() => {
+                        dropdown.style.opacity = '0';
+                        dropdown.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            dropdown.style.display = 'none';
+                        }, 200);
+                    }, 200);
+                });
+                
+                // Keyboard navigation support
+                const link = item.querySelector('a');
+                if (link) {
+                    link.addEventListener('focus', () => {
+                        clearTimeout(dropdownTimeout);
+                        dropdown.style.display = 'block';
+                        dropdown.style.opacity = '1';
+                        dropdown.style.transform = 'translateY(0)';
+                    });
+                    
+                    link.addEventListener('blur', (e) => {
+                        // Check if focus is moving to dropdown
+                        const relatedTarget = e.relatedTarget;
+                        if (!dropdown.contains(relatedTarget)) {
+                            dropdownTimeout = setTimeout(() => {
+                                dropdown.style.opacity = '0';
+                                dropdown.style.transform = 'translateY(-10px)';
+                                setTimeout(() => {
+                                    dropdown.style.display = 'none';
+                                }, 200);
+                            }, 100);
+                        }
+                    });
+                }
+                
+                // Click to toggle for mobile/touch devices
+                link.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        const isVisible = dropdown.style.display === 'block';
+                        
+                        // Close all other dropdowns
+                        document.querySelectorAll('.nav-strip-dropdown').forEach(dd => {
+                            dd.style.display = 'none';
+                            dd.style.opacity = '0';
+                            dd.style.transform = 'translateY(-10px)';
+                        });
+                        
+                        if (!isVisible) {
+                            dropdown.style.display = 'block';
+                            dropdown.style.opacity = '1';
+                            dropdown.style.transform = 'translateY(0)';
+                        }
+                    }
+                });
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-strip-item')) {
+                    document.querySelectorAll('.nav-strip-dropdown').forEach(dropdown => {
+                        dropdown.style.display = 'none';
+                        dropdown.style.opacity = '0';
+                        dropdown.style.transform = 'translateY(-10px)';
+                    });
+                }
+            });
+        }
+
+        // Smooth scrolling
+        function setupSmoothScrolling() {
+            const scrollToSection = (selector) => {
+                const link = document.querySelector(`a[href="${selector}"]`);
+                if (link) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetSection = document.querySelector(selector);
+                        if (targetSection) {
+                            targetSection.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                }
+            };
+            
+            ['#motorcycle', '#parts', '#services', '#repairs', '#wash', '#modification'].forEach(scrollToSection);
+        }
+        
+        // Service tabs functionality
+        function setupServiceTabs() {
+            const serviceTabs = document.querySelectorAll('.service-tab');
+            const serviceContents = document.querySelectorAll('.service-content');
+            
+            serviceTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-target');
+                    
+                    // Remove active class from all tabs and contents
+                    serviceTabs.forEach(t => t.classList.remove('active'));
+                    serviceContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const targetContent = document.getElementById(target);
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+            
+            // Handle service dropdown navigation
+            const serviceDropdownLinks = document.querySelectorAll('a[data-service]');
+            serviceDropdownLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const serviceType = link.getAttribute('data-service');
+                    
+                    // Scroll to services section
+                    const servicesSection = document.getElementById('services');
+                    if (servicesSection) {
+                        servicesSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        
+                        // Switch to the correct service tab
+                        setTimeout(() => {
+                            const targetTab = document.querySelector(`[data-target="${serviceType}"]`);
+                            if (targetTab) {
+                                targetTab.click();
+                            }
+                        }, 500);
+                    }
+                });
+            });
+        }
+
+        // Profile management
+        async function fetchUserProfile() {
+            try {
+                profileContainer.classList.add('loading');
+                const response = await fetch('/api/profile?t=' + Date.now(), {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        // User not authenticated, redirect to login
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const user = await response.json();
+                updateProfileDisplay(user);
+            } catch (error) {
+                console.error('Profile error:', error);
+                showToast('Failed to load profile. Please log in again.', 'error');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            } finally {
+                profileContainer.classList.remove('loading');
+            }
+        }
+
+        function updateProfileDisplay(user) {
+            if (user.full_name) {
+                profileName.textContent = user.full_name;
+            }
+            if (user.profile_picture) {
+                const picturePath = user.profile_picture.startsWith('/uploads/') 
+                    ? user.profile_picture 
+                    : `/uploads/${user.profile_picture}`;
+                profileAvatar.src = picturePath;
+                profileAvatar.classList.remove('loading');
+            }
+            if (user.dealership_name) {
+                profileRole.textContent = user.dealership_name.toUpperCase();
+            } else if (user.role) {
+                profileRole.textContent = user.role.toUpperCase();
+            }
+            
+            // Show/hide admin dashboard link based on user role
+            const adminDashboardLink = document.getElementById('admin-dashboard-link');
+            console.log('🔍 DEBUG: Checking admin dashboard link visibility');
+            console.log('🔍 DEBUG: User data:', user);
+            console.log('🔍 DEBUG: User role:', user.role);
+            console.log('🔍 DEBUG: Admin dashboard link element:', adminDashboardLink);
+            
+            if (adminDashboardLink) {
+                if (user.role && user.role.toLowerCase() === 'admin') {
+                    console.log('✅ DEBUG: Showing admin dashboard link');
+                    adminDashboardLink.style.display = 'block';
+                    console.log('✅ DEBUG: Link display style set to:', adminDashboardLink.style.display);
+                } else {
+                    console.log('❌ DEBUG: Hiding admin dashboard link');
+                    adminDashboardLink.style.display = 'none';
+                }
+            } else {
+                console.log('❌ DEBUG: Admin dashboard link element not found!');
+            }
+            
+
+        }
+
+        function setGuestMode() {
+            profileName.textContent = 'Guest';
+            profileRole.textContent = 'VISITOR';
+            profileAvatar.src = '/images/logo.png';
+            profileAvatar.classList.remove('loading');
+            
+            // Hide admin dashboard link for guests
+            const adminDashboardLink = document.getElementById('admin-dashboard-link');
+            if (adminDashboardLink) {
+                adminDashboardLink.style.display = 'none';
+            }
+            
+
+        }
+
+        // Profile picture upload
+        profileAvatar.addEventListener('click', () => profileUpload.click());
+        
+        profileUpload.addEventListener('change', async () => {
+            const file = profileUpload.files[0];
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Image must be less than 2MB', 'error');
+                return;
+            }
+
+            try {
+                profileAvatar.classList.add('loading');
+                const formData = new FormData();
+                formData.append('profile_picture', file);
+                
+                const response = await fetch('/api/profile/upload', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || `HTTP ${response.status}`);
+                }
+                
+                const result = await response.json();
+                updateProfileDisplay(result);
+                showToast('Profile picture updated successfully!', 'success');
+            } catch (error) {
+                console.error('Upload failed:', error);
+                showToast('Failed to update profile picture. Please try again.', 'error');
+            } finally {
+                profileAvatar.classList.remove('loading');
+                profileUpload.value = '';
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            if (!confirm('Are you sure you want to logout?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    showToast('Logged out successfully', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    throw new Error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('Logout failed. Please try again.', 'error');
+            }
+        });
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            // Remove existing toasts
+            const existingToasts = document.querySelectorAll('.toast');
+            existingToasts.forEach(toast => toast.remove());
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type === 'error' ? 'error' : 'success'}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 3000);
+        }
+
+        // Add to cart functionality
+        function setupAddToCart() {
+            document.querySelectorAll('.add-cart-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productName = this.closest('.product-card').querySelector('h3').textContent;
+                    showToast(`${productName} added to cart!`, 'success');
+                });
+            });
+        }
+
+        // Sort functionality
+        function setupSort() {
+            const sortSelects = document.querySelectorAll('.product-sort');
+            sortSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const sortValue = this.value;
+                    const section = this.closest('section');
+                    const productCards = Array.from(section.querySelectorAll('.product-card'));
+                    
+                    productCards.sort((a, b) => {
+                        const nameA = a.querySelector('h3').textContent.toLowerCase();
+                        const nameB = b.querySelector('h3').textContent.toLowerCase();
+                        const priceA = parseFloat(a.querySelector('p').textContent.replace(/[^\d.]/g, ''));
+                        const priceB = parseFloat(b.querySelector('p').textContent.replace(/[^\d.]/g, ''));
+                        
+                        switch(sortValue) {
+                            case 'price-asc':
+                                return priceA - priceB;
+                            case 'price-desc':
+                                return priceB - priceA;
+                            case 'name-asc':
+                                return nameA.localeCompare(nameB);
+                            case 'name-desc':
+                                return nameB.localeCompare(nameA);
+                            default:
+                                return 0;
+                        }
+                    });
+                    
+                    // Re-append sorted cards
+                    const container = section.querySelector('.products-list');
+                    productCards.forEach(card => container.appendChild(card));
+                });
+            });
+        }
+
+        // Category filtering functionality
+        function setupCategoryFilter() {
+            // Motorcycle category filter
+            const motorcycleCategoryFilter = document.getElementById('motorcycle-category-filter');
+            if (motorcycleCategoryFilter) {
+                motorcycleCategoryFilter.addEventListener('change', function() {
+                    const selectedCategory = this.value;
+                    const productCards = document.querySelectorAll('#motorcycle-products-list .product-card');
+                    
+                    productCards.forEach(card => {
+                        const productId = parseInt(card.dataset.productId);
+                        const product = window.currentProducts ? window.currentProducts.find(p => p.id === productId) : null;
+                        
+                        if (selectedCategory === 'all') {
+                            card.style.display = 'block';
+                        } else if (product && product.category_id && product.category_id.toString() === selectedCategory) {
+                            card.style.display = 'block';
+                        } else if (product && product.motorcycleCategory && product.motorcycleCategory.id.toString() === selectedCategory) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+            
+            // Parts category filter
+            const partsCategoryFilter = document.getElementById('parts-category-filter');
+            if (partsCategoryFilter) {
+                partsCategoryFilter.addEventListener('change', function() {
+                    const selectedCategory = this.value;
+                    const productCards = document.querySelectorAll('#parts-products-list .product-card');
+                    
+                    productCards.forEach(card => {
+                        const productId = parseInt(card.dataset.productId);
+                        const product = window.currentProducts ? window.currentProducts.find(p => p.id === productId) : null;
+                        
+                        if (selectedCategory === 'all') {
+                            card.style.display = 'block';
+                        } else if (product && product.parts_category_id && product.parts_category_id.toString() === selectedCategory) {
+                            card.style.display = 'block';
+                        } else if (product && product.motorcyclePartsCategory && product.motorcyclePartsCategory.id.toString() === selectedCategory) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+            
+            // Services category filter
+            const servicesCategoryFilter = document.getElementById('services-category-filter');
+            if (servicesCategoryFilter) {
+                servicesCategoryFilter.addEventListener('change', function() {
+                    const selectedCategory = this.value;
+                    const serviceCards = document.querySelectorAll('#services-list .product-card');
+                    
+                    serviceCards.forEach(card => {
+                        const serviceCategory = card.getAttribute('data-category') || '';
+                        
+                        if (selectedCategory === 'all') {
+                            card.style.display = 'block';
+                        } else if (serviceCategory === selectedCategory) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        }
+
+        // Search functionality
+        function setupSearch() {
+            const searchInputs = document.querySelectorAll('.product-search');
+            searchInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const section = this.closest('section');
+                    const productCards = section.querySelectorAll('.product-card');
+                    
+                    productCards.forEach(card => {
+                        const productName = card.querySelector('h3').textContent.toLowerCase();
+                        if (productName.includes(searchTerm)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+
+        // Global function for adding to cart
+        window.addToCart = function(productId, productName) {
+            // Get current cart from localStorage
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            
+            // Check if product already exists in cart
+            const existingItem = cart.find(item => item.productId === productId);
+            
+            if (existingItem) {
+                // Increment quantity if product already exists
+                existingItem.quantity += 1;
+            } else {
+                // Add new item to cart
+                cart.push({
+                    productId: productId,
+                    quantity: 1
+                });
+            }
+            
+            // Save cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Update cart count in navigation
+            updateCartCount();
+            
+            // Show success message
+            showToast(`${productName} added to cart!`, 'success');
+            
+            // Broadcast cart change to other tabs
+            window.dispatchEvent(new StorageEvent('storage', {
+                key: 'cart',
+                newValue: JSON.stringify(cart)
+            }));
+        };
+
+        // Update cart count in navigation
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            const cartCountElements = document.querySelectorAll('.cart-count');
+            cartCountElements.forEach(element => {
+                element.textContent = totalItems;
+            });
+        }
+
+        // Listen for cart changes from other pages
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'cart') {
+                updateCartCount();
+            }
+        });
+
+        // Real-time updates functionality
+        let lastProductCount = 0;
+        let updateInterval;
+
+        function startRealTimeUpdates() {
+            // Check for updates every 10 seconds (reduced frequency)
+            updateInterval = setInterval(async () => {
+                try {
+                    const response = await fetch('/api/products', {
+                        credentials: 'include'
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const products = data.products || data; // Handle both new and old API formats
+                        
+                        // Check if product count has changed
+                        if (products.length !== lastProductCount) {
+                            console.log('Product count changed, updating dashboard...');
+                            displayProducts(products);
+                            lastProductCount = products.length;
+                            loadDashboardStats(); // Refresh dashboard stats when products change
+                        }
+                        
+                        // Only update if there are actual changes to avoid infinite loops
+                        const currentProductIds = products.map(p => p.id).sort();
+                        const displayedProductIds = Array.from(document.querySelectorAll('.product-card'))
+                            .map(card => parseInt(card.dataset.productId))
+                            .filter(id => !isNaN(id))
+                            .sort();
+                        
+                        if (JSON.stringify(currentProductIds) !== JSON.stringify(displayedProductIds)) {
+                            console.log('Product list changed, updating dashboard...');
+                            displayProducts(products);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking for updates:', error);
+                    // Don't show error toast for background updates
+                }
+            }, 10000); // Check every 10 seconds (reduced frequency)
+        }
+
+        function stopRealTimeUpdates() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+        }
+
+        // Generate category badge HTML
+        function getCategoryBadge(product) {
+            // For motorcycle products
+            if (product.motorcycleCategory && product.motorcycleCategory.name) {
+                return `<span class="spec-item category-badge" style="background-color: ${product.motorcycleCategory.color || '#B399D4'}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">
+                    <i class="${product.motorcycleCategory.icon || 'fas fa-motorcycle'}"></i> ${product.motorcycleCategory.name}
+                </span>`;
+            }
+            // For parts products
+            else if (product.motorcyclePartsCategory && product.motorcyclePartsCategory.name) {
+                return `<span class="spec-item category-badge" style="background-color: ${product.motorcyclePartsCategory.color || '#B399D4'}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">
+                    <i class="${product.motorcyclePartsCategory.icon || 'fas fa-cog'}"></i> ${product.motorcyclePartsCategory.name}
+                </span>`;
+            }
+            // Fallback for old category field
+            else if (product.category) {
+                return `<span class="spec-item">${product.category}</span>`;
+            } else {
+                return `<span class="spec-item">Motorcycle</span>`;
+            }
+        }
+
+        // Load categories for the dashboard
+        async function loadCategories() {
+            try {
+                // Load motorcycle categories
+                const motorcycleResponse = await fetch('/api/categories');
+                if (motorcycleResponse.ok) {
+                    const motorcycleCategories = await motorcycleResponse.json();
+                    
+                    // Populate motorcycle category filter
+                    const motorcycleCategoryFilter = document.getElementById('motorcycle-category-filter');
+                    if (motorcycleCategoryFilter) {
+                        // Keep the "All Categories" option
+                        motorcycleCategoryFilter.innerHTML = '<option value="all">All Categories</option>';
+                        
+                        // Add category options
+                        motorcycleCategories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.id;
+                            option.textContent = category.name;
+                            motorcycleCategoryFilter.appendChild(option);
+                        });
+                    }
+                    
+                    // Store motorcycle categories globally
+                    window.motorcycleCategories = motorcycleCategories;
+                }
+                
+                // Load parts categories
+                const partsResponse = await fetch('/api/parts-categories');
+                if (partsResponse.ok) {
+                    const partsCategories = await partsResponse.json();
+                    
+                    // Populate parts category filter
+                    const partsCategoryFilter = document.getElementById('parts-category-filter');
+                    if (partsCategoryFilter) {
+                        // Keep the "All Categories" option
+                        partsCategoryFilter.innerHTML = '<option value="all">All Categories</option>';
+                        
+                        // Add category options for parts
+                        partsCategories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.id;
+                            option.textContent = category.name;
+                            partsCategoryFilter.appendChild(option);
+                        });
+                    }
+                    
+                    // Store parts categories globally
+                    window.partsCategories = partsCategories;
+                }
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Enhanced product display with custom pagination and infinite scroll
+        let motorcyclePagination = null;
+        let partsInfiniteScroll = null;
+        
+        function displayProducts(products) {
+            console.log('displayProducts called with', products.length, 'products');
+            
+            const motorcycleProductsList = document.getElementById('motorcycle-products-list');
+            const partsProductsList = document.getElementById('parts-products-list');
+            
+            if (!products || products.length === 0) {
+                console.log('No products to display');
+                motorcycleProductsList.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No motorcycles available</h3>
+                        <p>Motorcycles will appear here once they are added to the system.</p>
+                    </div>
+                `;
+                partsProductsList.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No parts available</h3>
+                        <p>Parts will appear here once they are added to the system.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Filter out products that are marked as removed in localStorage
+            const removedProductIds = JSON.parse(localStorage.getItem('removedProducts') || '[]')
+                .map(p => p.id);
+            
+            const activeProducts = products.filter(product => 
+                !removedProductIds.includes(product.id)
+            );
+            
+            console.log('Active products:', activeProducts.length);
+            
+            // Separate products by category
+            const motorcycles = activeProducts.filter(product => 
+                (product.motorcycleCategory && product.motorcycleCategory.id) || 
+                product.category === 'Motorcycle' || 
+                (!product.parts_category_id && !product.motorcyclePartsCategory)
+            );
+            const parts = activeProducts.filter(product => 
+                (product.parts_category_id && product.parts_category_id > 0) ||
+                (product.motorcyclePartsCategory && product.motorcyclePartsCategory.id) ||
+                product.category === 'Motorcycle Parts'
+            );
+            
+            console.log('Motorcycles:', motorcycles.length, 'Parts:', parts.length);
+            
+            // Check if jQuery is available
+            console.log('jQuery available:', typeof $ !== 'undefined');
+            if (typeof $ === 'undefined') {
+                console.error('jQuery not available, using simple display');
+                displayProductsSimple(products);
+                return;
+            }
+            
+            // Check if CustomPagination is available
+            console.log('CustomPagination available:', typeof CustomPagination !== 'undefined');
+            if (typeof CustomPagination === 'undefined') {
+                console.error('CustomPagination not available, using simple display');
+                displayProductsSimple(products);
+                return;
+            }
+            
+            // Initialize custom pagination for motorcycles
+            if (motorcycles.length > 0) {
+                console.log('Setting up motorcycle pagination with', motorcycles.length, 'motorcycles');
+                try {
+                    motorcyclePagination = new CustomPagination('#motorcycle-pagination', {
+                        itemsPerPage: 8,
+                        totalItems: motorcycles.length,
+                        currentPage: 1,
+                        onPageChange: (page, startIndex, endIndex) => {
+                            console.log('Page changed to:', page, 'showing items', startIndex, 'to', endIndex);
+                            displayMotorcyclePage(motorcycles, startIndex, endIndex);
+                        }
+                    });
+                    
+                    console.log('Motorcycle pagination initialized successfully');
+                    // Display first page of motorcycles
+                    displayMotorcyclePage(motorcycles, 0, 8);
+                } catch (error) {
+                    console.error('Error setting up motorcycle pagination:', error);
+                    displayProductsSimple(products);
+                }
+            } else {
+                motorcycleProductsList.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No motorcycles available</h3>
+                        <p>Motorcycles will appear here once they are added to the system.</p>
+                    </div>
+                `;
+            }
+            
+            // Initialize infinite scroll for parts
+            if (parts.length > 0) {
+                console.log('Setting up parts infinite scroll with', parts.length, 'parts');
+                try {
+                    partsInfiniteScroll = new CustomInfiniteScroll('#parts-products-list', {
+                        itemsPerLoad: 6,
+                        threshold: 100,
+                        onLoadMore: (page, itemsPerLoad, callback) => {
+                            console.log('Loading more parts, page:', page);
+                            loadMoreParts(parts, page, itemsPerLoad, callback);
+                        }
+                    });
+                    
+                    console.log('Parts infinite scroll initialized successfully');
+                    // Display first page of parts
+                    displayPartsPage(parts, 0, 6);
+                } catch (error) {
+                    console.error('Error setting up parts infinite scroll:', error);
+                    // Parts are already displayed in the simple display
+                }
+            } else {
+                partsProductsList.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No parts available</h3>
+                        <p>Parts will appear here once they are added to the system.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function displayMotorcyclePage(motorcycles, startIndex, endIndex) {
+            const motorcycleProductsList = document.getElementById('motorcycle-products-list');
+            const pageProducts = motorcycles.slice(startIndex, endIndex);
+            
+            motorcycleProductsList.innerHTML = pageProducts.map(product => {
+                const primaryImage = product.images && product.images.length > 0 
+                    ? product.images[0].image_url 
+                    : product.image || '/images/illus.png';
+                
+                return `
+                    <div class="product-card" data-product-id="${product.id}">
+                        <img src="${primaryImage}" alt="${product.name}" onerror="this.src='/images/illus.png'">
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p>₱${parseFloat(product.price).toLocaleString()}</p>
+                            <div class="motorcycle-specs">
+                                ${getCategoryBadge(product)}
+                                <span class="spec-item">${product.brand || 'Brand'}</span>
+                                <span class="spec-item">${product.condition || 'New'}</span>
+                            </div>
+                            <button class="add-cart-btn" onclick="addToCart(${product.id}, '${product.name}')">
+                                <i class="fas fa-shopping-cart"></i>
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function displayPartsPage(parts, startIndex, endIndex) {
+            const partsProductsList = document.getElementById('parts-products-list');
+            const pageProducts = parts.slice(startIndex, endIndex);
+            
+            if (startIndex === 0) {
+                // First page - replace content
+                partsProductsList.innerHTML = pageProducts.map(product => createProductCard(product)).join('');
+            } else {
+                // Subsequent pages - append content
+                const newProducts = pageProducts.map(product => createProductCard(product)).join('');
+                partsProductsList.insertAdjacentHTML('beforeend', newProducts);
+            }
+        }
+        
+        function loadMoreParts(parts, page, itemsPerLoad, callback) {
+            const startIndex = (page - 1) * itemsPerLoad;
+            const endIndex = startIndex + itemsPerLoad;
+            const hasMore = endIndex < parts.length;
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                displayPartsPage(parts, startIndex, endIndex);
+                callback(hasMore);
+            }, 500);
+        }
+        
+        function createProductCard(product) {
+            const primaryImage = product.images && product.images.length > 0 
+                ? product.images[0].image_url 
+                : product.image || '/images/illus.png';
+            
+            return `
+                <div class="product-card" data-product-id="${product.id}">
+                    <img src="${primaryImage}" alt="${product.name}" onerror="this.src='/images/illus.png'">
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p>₱${parseFloat(product.price).toLocaleString()}</p>
+                        <div class="motorcycle-specs">
+                            ${getCategoryBadge(product)}
+                            <span class="spec-item">${product.brand || 'Brand'}</span>
+                            <span class="spec-item">${product.condition || 'New'}</span>
+                        </div>
+                        <button class="add-cart-btn" onclick="addToCart(${product.id}, '${product.name}')">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Simple fallback display function
+        function displayProductsSimple(products) {
+            console.log('Using simple display fallback');
+            
+            const motorcycleProductsList = document.getElementById('motorcycle-products-list');
+            const partsProductsList = document.getElementById('parts-products-list');
+            
+            if (!products || products.length === 0) {
+                motorcycleProductsList.innerHTML = '<div class="no-products"><h3>No products available</h3></div>';
+                partsProductsList.innerHTML = '<div class="no-products"><h3>No products available</h3></div>';
+                return;
+            }
+            
+            // Separate products by category
+            const motorcycles = products.filter(product => 
+                (product.motorcycleCategory && product.motorcycleCategory.id) || 
+                product.category === 'Motorcycle' || 
+                (!product.parts_category_id && !product.motorcyclePartsCategory)
+            );
+            const parts = products.filter(product => 
+                (product.parts_category_id && product.parts_category_id > 0) ||
+                (product.motorcyclePartsCategory && product.motorcyclePartsCategory.id) ||
+                product.category === 'Motorcycle Parts'
+            );
+            
+            // Display motorcycles
+            if (motorcycles.length > 0) {
+                motorcycleProductsList.innerHTML = motorcycles.map(product => createProductCard(product)).join('');
+            } else {
+                motorcycleProductsList.innerHTML = '<div class="no-products"><h3>No motorcycles available</h3></div>';
+            }
+            
+            // Display parts
+            if (parts.length > 0) {
+                partsProductsList.innerHTML = parts.map(product => createProductCard(product)).join('');
+            } else {
+                partsProductsList.innerHTML = '<div class="no-products"><h3>No parts available</h3></div>';
+            }
+        }
+
+        // Listen for storage changes (when products are removed/restored in admin panel)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'removedProducts') {
+                console.log('Removed products changed, updating dashboard...');
+                loadProducts(); // Reload products to reflect changes
+                loadDashboardStats(); // Refresh dashboard stats
+            }
+            if (e.key === 'productChangeEvent') {
+                console.log('Product change event detected, updating dashboard...');
+                loadProducts(); // Reload products to reflect changes
+                loadDashboardStats(); // Refresh dashboard stats
+            }
+        });
+
+        // Listen for custom product change events
+        window.addEventListener('productChange', function(e) {
+            console.log('Product change event received:', e.detail);
+            loadProducts(); // Reload products to reflect changes
+            loadDashboardStats(); // Refresh dashboard stats
+        });
+
+        // Enhanced load products function with pagination support
+        async function loadProducts(page = 1, limit = 50) {
+            try {
+                const url = new URL('/api/products', window.location.origin);
+                url.searchParams.set('page', page);
+                url.searchParams.set('limit', limit);
+                
+                const response = await fetch(url, {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load products');
+                }
+                
+                const data = await response.json();
+                const products = data.products || data; // Handle both new and old API formats
+                lastProductCount = products.length;
+                
+                // Store current products globally for filtering
+                window.currentProducts = products;
+                
+                try {
+                    displayProducts(products);
+                } catch (error) {
+                    console.error('Error with custom pagination, using fallback:', error);
+                    displayProductsSimple(products);
+                }
+                loadDashboardStats(); // Refresh dashboard stats when products are loaded
+                
+            } catch (error) {
+                console.error('Error loading products:', error);
+                // Only show error toast for initial load, not background updates
+                if (!window.productsLoaded) {
+                    showToast('Failed to load products', 'error');
+                    displayFallbackProducts();
+                }
+            }
+        }
+
+        function displayFallbackProducts() {
+            const motorcycleProductsList = document.getElementById('motorcycle-products-list');
+            const partsProductsList = document.getElementById('parts-products-list');
+            
+            motorcycleProductsList.innerHTML = `
+                <div class="product-card">
+                    <img src="/images/motorcycles/bike1.jpg" alt="Sport Motorcycle">
+                    <div class="product-info">
+                        <h3>Yamaha R1</h3>
+                        <p>₱15,999</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Motorcycle</span>
+                            <span class="spec-item">Sport</span>
+                            <span class="spec-item">New</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="/images/motorcycles/bike2.jpg" alt="Classic Motorcycle">
+                    <div class="product-info">
+                        <h3>Harley Davidson</h3>
+                        <p>₱22,500</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Motorcycle</span>
+                            <span class="spec-item">Classic</span>
+                            <span class="spec-item">New</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="/images/motorcycles/bike3.jpg" alt="Adventure Motorcycle">
+                    <div class="product-info">
+                        <h3>BMW GS 1250</h3>
+                        <p>₱18,750</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Motorcycle</span>
+                            <span class="spec-item">Adventure</span>
+                            <span class="spec-item">New</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="/images/motorcycles/bike4.jpg" alt="Electric Motorcycle">
+                    <div class="product-info">
+                        <h3>Zero SR/F</h3>
+                        <p>₱19,995</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Motorcycle</span>
+                            <span class="spec-item">Electric</span>
+                            <span class="spec-item">New</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            partsProductsList.innerHTML = `
+                <div class="product-card">
+                    <img src="/images/illus.png" alt="Engine Oil Filter">
+                    <div class="product-info">
+                        <h3>High Performance Oil Filter</h3>
+                        <p>₱24.99</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Motorcycle Parts</span>
+                            <span class="spec-item">Engine</span>
+                            <span class="spec-item">New</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="/images/illus.png" alt="Brake Pads">
+                    <div class="product-info">
+                        <h3>Ceramic Brake Pads</h3>
+                        <p>₱89.99</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Motorcycle Parts</span>
+                            <span class="spec-item">Brakes</span>
+                            <span class="spec-item">New</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="/images/illus.png" alt="LED Headlight">
+                    <div class="product-info">
+                        <h3>LED Headlight Assembly</h3>
+                        <p>₱156.50</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Motorcycle Parts</span>
+                            <span class="spec-item">Electrical</span>
+                            <span class="spec-item">New</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load services functionality
+        async function loadServices() {
+            try {
+                const response = await fetch('/api/services', {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load services');
+                }
+                
+                const services = await response.json();
+                displayServices(services);
+                
+            } catch (error) {
+                console.error('Error loading services:', error);
+                showToast('Failed to load services', 'error');
+                displayFallbackServices();
+            }
+        }
+
+        function displayServices(services) {
+            const servicesList = document.getElementById('services-list');
+            
+            if (!services || services.length === 0) {
+                servicesList.innerHTML = `
+                    <div class="no-services">
+                        <i class="fas fa-tools" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                        <p>No services available at the moment.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const servicesHTML = services.map(service => {
+                const imageUrl = service.images && service.images.length > 0 
+                    ? service.images[0].image_url 
+                    : '/images/illus.png';
+                
+                const statusClass = service.status ? service.status.toLowerCase() : 'active';
+                const statusText = service.status || 'Active';
+                
+                return `
+                    <div class="product-card" data-category="${service.category || ''}" data-name="${service.name.toLowerCase()}">
+                        <img src="${imageUrl}" alt="${service.name}" onerror="this.src='/images/illus.png'">
+                        <div class="product-info">
+                            <h3>${service.name}</h3>
+                            <p class="service-price">₱${parseFloat(service.price).toFixed(2)}</p>
+                            <p class="service-description">${service.description}</p>
+                            <div class="motorcycle-specs">
+                                <span class="spec-item">${service.category || 'General'}</span>
+                                <span class="spec-item">${service.duration ? service.duration + 'h' : 'Flexible'}</span>
+                                <span class="spec-item status-${statusClass}">${statusText}</span>
+                            </div>
+                            <button class="add-cart-btn" onclick="bookService(${service.id})">
+                                <i class="fas fa-tools"></i>
+                                Book Service
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            servicesList.innerHTML = servicesHTML;
+        }
+
+        function displayFallbackServices() {
+            const servicesList = document.getElementById('services-list');
+            servicesList.innerHTML = `
+                <div class="product-card" data-category="Maintenance" data-name="engine diagnostic & repair">
+                    <img src="/images/illus.png" alt="Engine Repair">
+                    <div class="product-info">
+                        <h3>Engine Diagnostic & Repair</h3>
+                        <p class="service-price">₱150.00</p>
+                        <p class="service-description">Professional engine diagnostic and repair service</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Maintenance</span>
+                            <span class="spec-item">2h</span>
+                            <span class="spec-item status-active">Active</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-tools"></i>
+                            Book Service
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card" data-category="Repair" data-name="brake system service">
+                    <img src="/images/illus.png" alt="Brake Service">
+                    <div class="product-info">
+                        <h3>Brake System Service</h3>
+                        <p class="service-price">₱120.00</p>
+                        <p class="service-description">Complete brake system inspection and repair</p>
+                        <div class="motorcycle-specs">
+                            <span class="spec-item">Repair</span>
+                            <span class="spec-item">1.5h</span>
+                            <span class="spec-item status-active">Active</span>
+                        </div>
+                        <button class="add-cart-btn">
+                            <i class="fas fa-tools"></i>
+                            Book Service
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function bookService(serviceId) {
+            // TODO: Implement service booking functionality
+            showToast('Service booking feature coming soon!', 'info');
+        }
+
+        // Service search and filter functionality (updated to match product layout)
+        function setupServiceSearch() {
+            // Services will now use the same search and filter setup as products
+            // The existing setupSearch() and setupCategoryFilter() functions will handle services
+        }
+
+        function filterServices() {
+            // This function is now handled by the generic product filtering functions
+            // setupSearch() and setupCategoryFilter() will handle services automatically
+        }
+
+        // Dashboard statistics functionality
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/dashboard/stats');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load dashboard statistics');
+                }
+                
+                const stats = await response.json();
+                
+                // Update dashboard cards
+                document.getElementById('products-count').textContent = stats.products.toLocaleString();
+                document.getElementById('revenue-total').textContent = `₱${parseFloat(stats.revenue).toLocaleString()}`;
+                document.getElementById('customers-count').textContent = stats.customers.toLocaleString();
+                
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+                // Set fallback values
+                document.getElementById('products-count').textContent = '0';
+                document.getElementById('revenue-total').textContent = '₱0';
+                document.getElementById('customers-count').textContent = '0';
+            }
+        }
+
+
+
+        // Initialize
+        setupDropdowns();
+        setupSmoothScrolling();
+        setupServiceTabs();
+        setupAddToCart();
+        setupSearch();
+        setupSort(); // Setup product sorting
+        setupServiceSearch(); // Setup service search and filter
+        setupCategoryFilter(); // Setup category filtering
+        loadCategories(); // Load motorcycle categories
+        loadProducts().then(() => {
+            window.productsLoaded = true;
+        }); // Load products from database
+        loadServices(); // Load services from database
+        loadDashboardStats(); // Load dashboard statistics
+        fetchUserProfile();
+        // startRealTimeUpdates(); // Start real-time updates (temporarily disabled for debugging)
+        updateCartCount(); // Initialize cart count
+                        });
+                </script>
+                
+                <script src="/js/notifications.js"></script>
+                <script src="/js/custom-pagination.js"></script>
+</body>
+</html>

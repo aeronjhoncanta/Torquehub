@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login History - TorqueHub Admin</title>
+    <link rel="stylesheet" href="/css/adashboard.css">
+    <link rel="stylesheet" href="/css/login-history.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><i class="fas fa-tachometer-alt"></i> <a href="/adashboard" style="color:inherit;text-decoration:none;">Admin Dashboard</a></li>
+            <li><i class="fas fa-users"></i> <a href="/user-management" style="color:inherit;text-decoration:none;display:block;width:100%;">User Management</a></li>
+            <li><i class="fas fa-box"></i> <a href="/product-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Product Management</a></li>
+            <li><i class="fas fa-tools"></i> <a href="/services-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Services Management</a></li>
+            <li><i class="fas fa-shopping-cart"></i> <a href="/transaction-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Transaction Management</a></li>
+            <li><i class="fas fa-chart-bar"></i> <a href="/charts" style="color:inherit;text-decoration:none;display:block;width:100%;">Charts & Analytics</a></li>
+            <li><i class="fas fa-history"></i> <a href="/login-history" style="color:inherit;text-decoration:none;display:block;width:100%;">Login History</a></li>
+            <li><i class="fas fa-sign-out-alt"></i> <a href="#" id="logout-btn" style="color:inherit;text-decoration:none;display:block;width:100%;">Logout</a></li>
+            <li><i class="fas fa-home"></i> <a href="/dashboard" style="color:inherit;text-decoration:none;">Dashboard</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <div class="page-header">
+            <h1><i class="fas fa-history"></i> Login History</h1>
+            <p>Monitor all user login attempts and security events</p>
+        </div>
+
+        <div class="login-history-container">
+            <!-- Statistics Cards -->
+            <div class="filters-section">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <h3>Total Logins</h3>
+                        <p class="stat-total" id="totalLogins">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Successful</h3>
+                        <p class="stat-success" id="successfulLogins">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Failed</h3>
+                        <p class="stat-failed" id="failedLogins">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today</h3>
+                        <p class="stat-total" id="todayLogins">0</p>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="emailFilter">Email</label>
+                        <input type="text" id="emailFilter" placeholder="Filter by email...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="statusFilter">Status</label>
+                        <select id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="success">Successful</option>
+                            <option value="failed">Failed</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateFromFilter">Date From</label>
+                        <input type="date" id="dateFromFilter">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dateToFilter">Date To</label>
+                        <input type="date" id="dateToFilter">
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button class="btn-filter btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <button class="btn-filter btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Login Table -->
+            <div class="login-table-container">
+                <div class="table-header">
+                    <h2 class="table-title">Login Attempts</h2>
+                    <div class="table-actions">
+                        <button class="btn-refresh" onclick="refreshData()" title="Refresh data (Ctrl+R)">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="btn-export" onclick="exportToCSV()" title="Export to CSV (Ctrl+E)">
+                            <i class="fas fa-download"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div id="loginTableContainer">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i> Loading login history...
+                    </div>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentFilters = {};
+
+        // Check authentication
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/profile', {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        window.location.href = '/login';
+                        return;
+                    }
+                    throw new Error('Failed to fetch profile');
+                }
+                
+                const user = await response.json();
+                
+                if (user.role !== 'admin' && user.role_id !== 2) {
+                    alert('Access denied. Admin privileges required.');
+                    window.location.href = '/dashboard';
+                    return;
+                }
+                
+                return user;
+            } catch (error) {
+                console.error('Authentication error:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        // Load login history
+        async function loadLoginHistory(page = 1, filters = {}) {
+            try {
+                const container = document.getElementById('loginTableContainer');
+                container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading login history...</div>';
+
+                const queryParams = new URLSearchParams({
+                    page: page,
+                    limit: 20,
+                    ...filters
+                });
+
+                const response = await fetch(`/api/login-history?${queryParams}`, {
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch login history');
+                }
+
+                const data = await response.json();
+                
+                if (data.loginHistory.length === 0) {
+                    container.innerHTML = '<div class="no-data">No login history found</div>';
+                    return;
+                }
+
+                displayLoginHistory(data.loginHistory);
+                updatePagination(data.pagination);
+                updateStats(data.stats);
+
+            } catch (error) {
+                console.error('Error loading login history:', error);
+                document.getElementById('loginTableContainer').innerHTML = 
+                    '<div class="error-message">Error loading login history. Please try again.</div>';
+            }
+        }
+
+        // Display login history in table
+        function displayLoginHistory(loginHistory) {
+            const container = document.getElementById('loginTableContainer');
+            
+            let tableHTML = `
+                <table class="login-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>IP Address</th>
+                            <th>Status</th>
+                            <th>Failure Reason</th>
+                            <th>Login Time</th>
+                            <th>User Agent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            loginHistory.forEach(login => {
+                const statusClass = login.status === 'success' ? 'status-success' : 'status-failed';
+                const statusText = login.status === 'success' ? 'Success' : 'Failed';
+                const userData = login.User || null;
+                const userInitial = userData && userData.full_name ? userData.full_name.charAt(0).toUpperCase() : 'U';
+                
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">${userInitial}</div>
+                                <div class="user-details">
+                                    <h4>${userData ? userData.full_name : 'Unknown User'}</h4>
+                                    <p>${userData ? userData.dealership_name : 'N/A'}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${login.email}</td>
+                        <td>${login.ip_address}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${login.failure_reason || '-'}</td>
+                        <td>${new Date(login.login_time).toLocaleString()}</td>
+                        <td title="${login.user_agent || 'N/A'}">${(login.user_agent || 'N/A').substring(0, 50)}${(login.user_agent || '').length > 50 ? '...' : ''}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        // Update pagination
+        function updatePagination(pagination) {
+            const paginationContainer = document.getElementById('pagination');
+            currentPage = pagination.currentPage;
+            totalPages = pagination.totalPages;
+
+            let paginationHTML = '';
+
+            // Previous button
+            if (currentPage > 1) {
+                paginationHTML += `<button onclick="changePage(${currentPage - 1})">Previous</button>`;
+            }
+
+            // Page numbers
+            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+                const activeClass = i === currentPage ? 'active' : '';
+                paginationHTML += `<button class="${activeClass}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            // Next button
+            if (currentPage < totalPages) {
+                paginationHTML += `<button onclick="changePage(${currentPage + 1})">Next</button>`;
+            }
+
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+        // Update statistics
+        function updateStats(stats) {
+            document.getElementById('totalLogins').textContent = stats.total || 0;
+            document.getElementById('successfulLogins').textContent = stats.successful || 0;
+            document.getElementById('failedLogins').textContent = stats.failed || 0;
+            document.getElementById('todayLogins').textContent = stats.today || 0;
+        }
+
+        // Change page
+        function changePage(page) {
+            currentPage = page;
+            loadLoginHistory(page, currentFilters);
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const filters = {
+                email: document.getElementById('emailFilter').value,
+                status: document.getElementById('statusFilter').value,
+                dateFrom: document.getElementById('dateFromFilter').value,
+                dateTo: document.getElementById('dateToFilter').value
+            };
+
+            // Remove empty filters
+            Object.keys(filters).forEach(key => {
+                if (!filters[key]) delete filters[key];
+            });
+
+            currentFilters = filters;
+            currentPage = 1;
+            loadLoginHistory(1, filters);
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('emailFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('dateFromFilter').value = '';
+            document.getElementById('dateToFilter').value = '';
+            
+            currentFilters = {};
+            currentPage = 1;
+            loadLoginHistory(1);
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            try {
+                const queryParams = new URLSearchParams({
+                    export: 'csv',
+                    ...currentFilters
+                });
+
+                const link = document.createElement('a');
+                link.href = `/api/login-history/export?${queryParams}`;
+                link.download = `login-history-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Error exporting CSV:', error);
+                alert('Error exporting CSV. Please try again.');
+            }
+        }
+
+        // Logout functionality
+        async function logout() {
+            if (!confirm('Are you sure you want to logout?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    throw new Error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Logout failed. Please try again.');
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const user = await checkAuth();
+                if (!user) return;
+                
+                // Load initial data
+                loadLoginHistory();
+                
+                // Setup logout functionality
+                const logoutBtn = document.getElementById('logout-btn');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', logout);
+                }
+                
+                // Setup keyboard shortcuts
+                setupKeyboardShortcuts();
+                
+                // Setup filter event listeners
+                setupFilterListeners();
+                
+                // Show welcome message
+                showWelcomeMessage();
+                
+            } catch (error) {
+                console.error('Page initialization error:', error);
+            }
+        });
+
+        // Setup keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + F to focus on email filter
+                if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('emailFilter').focus();
+                }
+                
+                // Ctrl/Cmd + E to export
+                if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                    e.preventDefault();
+                    exportToCSV();
+                }
+                
+                // Ctrl/Cmd + R to refresh
+                if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                    e.preventDefault();
+                    refreshData();
+                }
+                
+                // Escape to clear filters
+                if (e.key === 'Escape') {
+                    clearFilters();
+                }
+            });
+        }
+
+        // Refresh data function
+        async function refreshData() {
+            const refreshBtn = document.querySelector('.btn-refresh');
+            const originalText = refreshBtn.innerHTML;
+            
+            setLoadingState(refreshBtn, true);
+            
+            try {
+                await loadLoginHistory(currentPage, currentFilters);
+                
+                // Show success message
+                showNotification('Data refreshed successfully!', 'success');
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+                showNotification('Failed to refresh data. Please try again.', 'error');
+            } finally {
+                setLoadingState(refreshBtn, false);
+            }
+        }
+
+        // Show notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            // Add styles for notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideInRight 0.3s ease-out;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 
+                           type === 'error' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 
+                           'linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%)'};
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideOutRight 0.3s ease-out';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 3000);
+        }
+
+        // Setup filter event listeners
+        function setupFilterListeners() {
+            const emailFilter = document.getElementById('emailFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const dateFromFilter = document.getElementById('dateFromFilter');
+            const dateToFilter = document.getElementById('dateToFilter');
+
+            // Auto-apply filters on Enter key
+            [emailFilter, statusFilter, dateFromFilter, dateToFilter].forEach(filter => {
+                filter.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        applyFilters();
+                    }
+                });
+            });
+
+            // Auto-apply filters on date change
+            [dateFromFilter, dateToFilter].forEach(filter => {
+                filter.addEventListener('change', function() {
+                    if (dateFromFilter.value || dateToFilter.value) {
+                        applyFilters();
+                    }
+                });
+            });
+        }
+
+        // Show welcome message
+        function showWelcomeMessage() {
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.className = 'welcome-message';
+            welcomeMessage.innerHTML = `
+                <div style="background: linear-gradient(135deg, #a855f7 0%, #8b5cf6 100%); color: white; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; text-align: center;">
+                    <i class="fas fa-info-circle"></i> 
+                    <strong>Login History Dashboard</strong><br>
+                    <small>Monitor all user login attempts and security events. Use filters to search specific data.</small>
+                </div>
+            `;
+            
+            const container = document.querySelector('.login-history-container');
+            container.insertBefore(welcomeMessage, container.firstChild);
+            
+            // Remove welcome message after 5 seconds
+            setTimeout(() => {
+                if (welcomeMessage.parentNode) {
+                    welcomeMessage.remove();
+                }
+            }, 5000);
+        }
+
+        // Add loading state to buttons
+        function setLoadingState(button, isLoading) {
+            if (isLoading) {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            } else {
+                button.disabled = false;
+                button.innerHTML = button.getAttribute('data-original-text') || button.innerHTML;
+            }
+        }
+
+        // Enhanced apply filters with loading state
+        async function applyFilters() {
+            const filterBtn = document.querySelector('.btn-primary');
+            const originalText = filterBtn.innerHTML;
+            filterBtn.setAttribute('data-original-text', originalText);
+            
+            setLoadingState(filterBtn, true);
+            
+            try {
+                const filters = {
+                    email: document.getElementById('emailFilter').value,
+                    status: document.getElementById('statusFilter').value,
+                    dateFrom: document.getElementById('dateFromFilter').value,
+                    dateTo: document.getElementById('dateToFilter').value
+                };
+
+                // Remove empty filters
+                Object.keys(filters).forEach(key => {
+                    if (!filters[key]) delete filters[key];
+                });
+
+                currentFilters = filters;
+                currentPage = 1;
+                await loadLoginHistory(1, filters);
+            } catch (error) {
+                console.error('Error applying filters:', error);
+            } finally {
+                setLoadingState(filterBtn, false);
+            }
+        }
+    </script>
+</body>
+</html> 

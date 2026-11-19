@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management - TorqueHub</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/adashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <style>
+        .category-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .category-header h1 {
+            color: var(--primary-dark);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(179,153,212,0.1);
+            border: 1px solid var(--primary-light);
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stat-card h3 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-table-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(179,153,212,0.1);
+            border: 1px solid var(--primary-light);
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-category {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-category.btn-sm {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-info:hover { background: #138496; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .btn-warning:hover { background: #e0a800; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(179,153,212,0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .icon-preview {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid var(--primary-light);
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><i class="fas fa-tachometer-alt"></i> <a href="/adashboard" style="color:inherit;text-decoration:none;">Admin Dashboard</a></li>
+            <li><i class="fas fa-users"></i> <a href="/user-management" style="color:inherit;text-decoration:none;display:block;width:100%;">User Management</a></li>
+            <li><i class="fas fa-box"></i> <a href="/product-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Product Management</a></li>
+            <li><i class="fas fa-tags"></i> <a href="/category-management" style="color:inherit;text-decoration:none;display:block;width:100%;background:var(--primary);color:white;">Category Management</a></li>
+            <li><i class="fas fa-tools"></i> <a href="/services-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Services Management</a></li>
+            <li><i class="fas fa-shopping-cart"></i> <a href="/transaction-management" style="color:inherit;text-decoration:none;display:block;width:100%;">Transaction Management</a></li>
+            <li><i class="fas fa-chart-bar"></i> <a href="/charts" style="color:inherit;text-decoration:none;display:block;width:100%;">Charts & Analytics</a></li>
+            <li><i class="fas fa-sign-out-alt"></i> <a href="#" id="logout-btn" style="color:inherit;text-decoration:none;display:block;width:100%;">Logout</a></li>
+            <li><i class="fas fa-home"></i> <a href="/dashboard" style="color:inherit;text-decoration:none;">Dashboard</a></li>
+        </ul>
+    </div>
+    
+    <div class="main">
+        <div class="category-container">
+            <div class="category-header">
+                <h1><i class="fas fa-tags"></i> Category Management</h1>
+                <p>Manage motorcycle categories and classifications</p>
+            </div>
+
+            <div class="category-stats" id="statsContainer">
+                <div class="stat-card">
+                    <i class="fas fa-tags"></i>
+                    <h3 id="totalCategories">-</h3>
+                    <p>Total Categories</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <h3 id="activeCategories">-</h3>
+                    <p>Active Categories</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-box"></i>
+                    <h3 id="totalProducts">-</h3>
+                    <p>Total Products</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3 id="popularCategory">-</h3>
+                    <p>Most Popular</p>
+                </div>
+            </div>
+
+            <div id="messageContainer"></div>
+
+            <div class="category-table-container">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3><i class="fas fa-list"></i> Motorcycle Categories</h3>
+                    <button class="btn-category btn-primary" onclick="openAddModal()">
+                        <i class="fas fa-plus"></i> Add Category
+                    </button>
+                </div>
+                
+                <table id="categoriesTable" class="display responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Icon</th>
+                            <th>Color</th>
+                            <th>Products</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Add Category</h2>
+            <form id="categoryForm">
+                <input type="hidden" id="categoryId">
+                
+                <div class="form-group">
+                    <label for="categoryName">Category Name *</label>
+                    <input type="text" id="categoryName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="categoryDescription">Description</label>
+                    <textarea id="categoryDescription" rows="3"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categoryIcon">Icon</label>
+                        <select id="categoryIcon">
+                            <option value="fas fa-motorcycle">Motorcycle</option>
+                            <option value="fas fa-road">Road</option>
+                            <option value="fas fa-route">Route</option>
+                            <option value="fas fa-mountain">Mountain</option>
+                            <option value="fas fa-compass">Compass</option>
+                            <option value="fas fa-bolt">Bolt</option>
+                            <option value="fas fa-scooter">Scooter</option>
+                            <option value="fas fa-clock">Clock</option>
+                            <option value="fas fa-tools">Tools</option>
+                            <option value="fas fa-car">Car</option>
+                        </select>
+                        <div id="iconPreview" class="icon-preview">
+                            <i class="fas fa-motorcycle"></i>
+                            <span>Motorcycle</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoryColor">Color</label>
+                        <input type="color" id="categoryColor" value="#B399D4">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="categorySortOrder">Sort Order</label>
+                        <input type="number" id="categorySortOrder" value="0" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoryStatus">Status</label>
+                        <select id="categoryStatus">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="text-align: right; margin-top: 2rem;">
+                    <button type="button" class="btn-category btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-category btn-primary">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+    <script>
+        let categoriesTable;
+        let currentUser = null;
+
+        $(document).ready(function() {
+            checkAuth();
+            initializeDataTable();
+            loadStats();
+            setupIconPreview();
+        });
+
+        function checkAuth() {
+            $.get('/api/profile')
+                .done(function(user) {
+                    currentUser = user;
+                    if (user.role && user.role.toLowerCase() !== 'admin') {
+                        window.location.href = '/dashboard';
+                    }
+                })
+                .fail(function() {
+                    window.location.href = '/login';
+                });
+        }
+
+        function initializeDataTable() {
+            categoriesTable = $('#categoriesTable').DataTable({
+                ajax: {
+                    url: '/api/categories/admin',
+                    dataSrc: ''
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'name' },
+                    { 
+                        data: 'description',
+                        render: function(data) {
+                            return data ? (data.length > 50 ? data.substring(0, 50) + '...' : data) : 'No description';
+                        }
+                    },
+                    { 
+                        data: 'icon',
+                        render: function(data) {
+                            return `<i class="${data || 'fas fa-motorcycle'}"></i>`;
+                        }
+                    },
+                    { 
+                        data: 'color',
+                        render: function(data) {
+                            return `<div style="width: 30px; height: 20px; background-color: ${data || '#B399D4'}; border-radius: 4px;"></div>`;
+                        }
+                    },
+                    { data: 'product_count', defaultContent: '0' },
+                    { 
+                        data: 'is_active',
+                        render: function(data) {
+                            return data ? 
+                                '<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Active</span>' : 
+                                '<span style="color: #dc3545;"><i class="fas fa-times-circle"></i> Inactive</span>';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                                <div class="action-buttons">
+                                    <button class="btn-category btn-sm btn-info" onclick="editCategory(${row.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-category btn-sm btn-danger" onclick="deleteCategory(${row.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                responsive: true,
+                order: [[0, 'asc']],
+                pageLength: 25
+            });
+        }
+
+        function loadStats() {
+            $.get('/api/categories/stats/with-counts')
+                .done(function(categories) {
+                    const totalCategories = categories.length;
+                    const activeCategories = categories.filter(c => c.is_active).length;
+                    const totalProducts = categories.reduce((sum, c) => sum + (parseInt(c.product_count) || 0), 0);
+                    const popularCategory = categories.length > 0 ? 
+                        categories.reduce((max, c) => (parseInt(c.product_count) || 0) > (parseInt(max.product_count) || 0) ? c : max).name : 'None';
+
+                    $('#totalCategories').text(totalCategories);
+                    $('#activeCategories').text(activeCategories);
+                    $('#totalProducts').text(totalProducts);
+                    $('#popularCategory').text(popularCategory);
+                })
+                .fail(function() {
+                    showMessage('Failed to load statistics', 'error');
+                });
+        }
+
+        function setupIconPreview() {
+            $('#categoryIcon').change(function() {
+                const icon = $(this).val();
+                const iconText = $(this).find('option:selected').text();
+                $('#iconPreview').html(`<i class="${icon}"></i><span>${iconText}</span>`);
+            });
+        }
+
+        function openAddModal() {
+            $('#modalTitle').text('Add Category');
+            $('#categoryForm')[0].reset();
+            $('#categoryId').val('');
+            $('#categoryColor').val('#B399D4');
+            $('#categorySortOrder').val('0');
+            $('#categoryStatus').val('true');
+            $('#iconPreview').html('<i class="fas fa-motorcycle"></i><span>Motorcycle</span>');
+            $('#categoryModal').show();
+        }
+
+        function editCategory(id) {
+            $.get(`/api/categories/${id}`)
+                .done(function(category) {
+                    $('#modalTitle').text('Edit Category');
+                    $('#categoryId').val(category.id);
+                    $('#categoryName').val(category.name);
+                    $('#categoryDescription').val(category.description);
+                    $('#categoryIcon').val(category.icon);
+                    $('#categoryColor').val(category.color);
+                    $('#categorySortOrder').val(category.sort_order);
+                    $('#categoryStatus').val(category.is_active.toString());
+                    $('#iconPreview').html(`<i class="${category.icon}"></i><span>${category.name}</span>`);
+                    $('#categoryModal').show();
+                })
+                .fail(function() {
+                    showMessage('Failed to load category', 'error');
+                });
+        }
+
+        function deleteCategory(id) {
+            if (confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+                $.ajax({
+                    url: `/api/categories/${id}`,
+                    method: 'DELETE'
+                })
+                .done(function(response) {
+                    showMessage('Category deleted successfully', 'success');
+                    categoriesTable.ajax.reload();
+                    loadStats();
+                })
+                .fail(function(xhr) {
+                    const error = xhr.responseJSON ? xhr.responseJSON.error : 'Failed to delete category';
+                    showMessage(error, 'error');
+                });
+            }
+        }
+
+        function closeModal() {
+            $('#categoryModal').hide();
+        }
+
+        $('#categoryForm').submit(function(e) {
+            e.preventDefault();
+            
+            const categoryId = $('#categoryId').val();
+            const categoryData = {
+                name: $('#categoryName').val(),
+                description: $('#categoryDescription').val(),
+                icon: $('#categoryIcon').val(),
+                color: $('#categoryColor').val(),
+                sort_order: parseInt($('#categorySortOrder').val()),
+                is_active: $('#categoryStatus').val() === 'true'
+            };
+            
+            const url = categoryId ? `/api/categories/${categoryId}` : '/api/categories';
+            const method = categoryId ? 'PUT' : 'POST';
+            
+            $.ajax({
+                url: url,
+                method: method,
+                contentType: 'application/json',
+                data: JSON.stringify(categoryData)
+            })
+            .done(function(response) {
+                showMessage(categoryId ? 'Category updated successfully' : 'Category created successfully', 'success');
+                closeModal();
+                categoriesTable.ajax.reload();
+                loadStats();
+            })
+            .fail(function(xhr) {
+                const error = xhr.responseJSON ? xhr.responseJSON.error : 'Failed to save category';
+                showMessage(error, 'error');
+            });
+        });
+
+        function showMessage(message, type) {
+            const container = $('#messageContainer');
+            const alertClass = type === 'error' ? 'error' : 'success';
+            
+            container.html(`<div class="message ${alertClass}">${message}</div>`);
+            
+            setTimeout(() => {
+                container.empty();
+            }, 5000);
+        }
+
+        $(window).click(function(event) {
+            if (event.target.className === 'modal') {
+                $('.modal').hide();
+            }
+        });
+
+        // Logout functionality
+        $('#logout-btn').click(function(e) {
+            e.preventDefault();
+            $.post('/api/logout')
+                .done(function() {
+                    window.location.href = '/login';
+                })
+                .fail(function() {
+                    window.location.href = '/login';
+                });
+        });
+    </script>
+</body>
+</html> 
